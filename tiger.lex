@@ -24,6 +24,7 @@ void adjust(void)
 {
  EM_tokPos=charPos;
  charPos+=yyleng;
+ yylloc.first_column += yyleng;
 }
 
 %}
@@ -36,7 +37,8 @@ void adjust(void)
 
 %%
 [ \r\t] {adjust(); continue;}
-\n	 {adjust(); EM_newline(); continue;}
+\n	 {adjust(); yylloc.first_column=1; yylloc.first_line+=1;
+          EM_newline(); continue;}
 
 array {adjust(); return ARRAY;}
 if   {adjust(); return IF;}
