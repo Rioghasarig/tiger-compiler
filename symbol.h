@@ -1,5 +1,7 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
+
+#include "util.h"
 /*
  * symbol.h - Symbols and symbol-tables
  *

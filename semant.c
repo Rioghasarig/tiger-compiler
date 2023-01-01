@@ -4,9 +4,9 @@
 #include "semant.h"
 #include "errormsg.h"
 #include "env.h"
+#include "std_functions.h"
 
-
-
+		       
 struct expty transVar(S_table venv, S_table tenv, A_var v) {
   switch (v->kind) {
     case A_simpleVar: {
@@ -114,6 +114,16 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 }
   
 
+struct expty call_exp(S_table venv, S_table tenv, A_exp call_exp) {
+  S_symbol func = call_exp->u.call.func;
+  
+  E_enventry fun_entry = S_look(venv, func);
+  if(fun_entry && fun_entry->kind == E_funEntry) {
+    struct expty result = {NULL, fun_entry->u.fun.result};
+    return result;
+  }
+
+}
 
 struct expty transExp(S_table venv, S_table tenv, A_exp a) {
   switch(a->kind) {
@@ -211,12 +221,7 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
       }
     }
     case A_callExp: {
-      S_symbol func = a->u.call.func;
-      E_enventry fun_entry = S_look(venv, func);
-      if(fun_entry && fun_entry->kind == E_funEntry) {
-	struct expty result = {NULL, fun_entry->u.fun.result};
-	return result;
-      }
+      return call_exp(venv, tenv, a); 
     }
     case A_assignExp: {
       A_exp exp = a->u.assign.exp;
@@ -264,7 +269,10 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
 }
 
 void SEM_transProg(A_exp exp) {
-  transExp(S_empty(), S_empty(), exp);
+  S_table venv = S_empty();
+  S_table tenv = S_empty();
+  add_std_functions(venv); 
+  transExp(venv, tenv, exp);
 }
 
 
