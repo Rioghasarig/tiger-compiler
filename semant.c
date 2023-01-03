@@ -32,29 +32,69 @@ struct expty transVar(S_table venv, S_table tenv, A_var v) {
   }
 }
 
-Ty_ty transTy(A_ty ty) {
+Ty_fieldList Ty_fieldListFromAST(S_table tenv, A_fieldList fieldList) {
+  if(fieldList == NULL)
+    return NULL;
+  
+  A_field head_field = fieldList->head;
+
+  Ty_ty head_type = tylook(tenv, head_field->typ, head_field->pos);
+  S_symbol head_name = head_field->name;
+  Ty_field head_ty_field = Ty_Field(head_name, head_type);
+  
+  Ty_fieldList head_node = Ty_FieldList(head_ty_field, NULL); 
+  Ty_fieldList prev = NULL;
+  Ty_fieldList newNode = NULL;
+  
+  while(fieldList->tail != NULL) {
+    fieldList = fieldList->tail;
+    head_field = fieldList->head;
+
+    head_type = tylook(tenv, head_field->typ, head_field->pos);
+    head_name = head_field->name;
+    head_ty_field = Ty_Field(head_name, head_type);
+    newNode = Ty_FieldList(head_ty_field, NULL);
+    if (head_node->tail == NULL) {
+      head_node->tail = newNode; 
+    }
+    else {
+      prev->tail = newNode;
+    }
+
+    prev = newNode; 
+  }
+  return head_node; 
+}
+
+Ty_ty transTy(S_table tenv, A_ty ty) {
   if(ty->kind == A_arrayTy) {
     if(strcmp(ty->u.array->name, "int") == 0)
        return Ty_Array(Ty_Int()); 
   }
-
+  if(ty->kind == A_recordTy) {
+    Ty_fieldList fieldList = Ty_fieldListFromAST(tenv, ty->u.record);
+    return Ty_Record(fieldList); 
+  }
   return NULL;
 }
 
-Ty_ty tylook(S_table tenv, S_symbol name, int pos) {
-  Ty_ty nameTy = S_look(tenv, name);
+
+Ty_ty tylook(S_table tenv, S_symbol type_name, int pos) {
+  Ty_ty nameTy = S_look(tenv, type_name);
   if (nameTy) {
     return nameTy; 
   }
   else {
-    EM_error(pos, "undefined variable %s",
-	     S_name(name));
+    EM_error(pos, "undefined type %s",
+	     S_name(type_name));
     return NULL;
   }
 }
 
 Ty_tyList makeFormalTyList(S_table tenv, A_fieldList params) {
 
+  if (params == NULL)
+    return NULL;
   
   A_field params_head = params->head;
   
@@ -71,7 +111,7 @@ Ty_tyList makeFormalTyList(S_table tenv, A_fieldList params) {
     head_type = tylook(tenv, params_head->typ, params_head->pos);
     nameList_head = Ty_Name(params_head->name, head_type);
     newNode = Ty_TyList(nameList_head, NULL);
-    if(head->tail = NULL) {
+    if(head->tail == NULL) {
       head->tail = newNode;
     }
     else {
@@ -91,12 +131,23 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
     }
     case A_typeDec: {
       S_enter(tenv, d->u.type->name,
-		     transTy(d->u.type->ty));
+	      Ty_Name(d->u.type->name, NULL)); 
+	     
+      Ty_ty type = transTy(tenv, d->u.type->ty);
       break;
     }
     case A_functionDec: {
       A_fundec f = d->u.function;
-      Ty_ty resultTy = S_look(tenv, f->result);
+
+      // If the function has a return type find it in the type symbol table
+      Ty_ty resultTy;
+      if(f->result) {
+	resultTy = S_look(tenv, f->result);
+      }
+      else {
+	resultTy = Ty_Void();
+      }
+	
       Ty_tyList formalTys = makeFormalTyList(tenv,f->params);
       S_enter(venv, f->name, E_FunEntry(formalTys, resultTy));
       S_beginScope(venv);
@@ -240,7 +291,11 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
       }
 
       struct expty then_result = transExp(venv, tenv, then);
-      struct expty elsee_result = transExp(venv, tenv, elsee);
+
+      
+      if(elsee) {
+	 struct expty elsee_result = transExp(venv, tenv, elsee);
+      }
       return then_result; 
     }
     case A_whileExp : {
@@ -271,7 +326,8 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
 void SEM_transProg(A_exp exp) {
   S_table venv = S_empty();
   S_table tenv = S_empty();
-  add_std_functions(venv); 
+  add_std_functions(venv);
+  add_std_types(tenv);
   transExp(venv, tenv, exp);
 }
 

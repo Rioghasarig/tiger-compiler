@@ -19,4 +19,5 @@ struct expty transVar(S_table venv, S_table tenv, A_var v);
 void transDec(S_table venv, S_table tenv, A_dec d);
 struct expty transExp(S_table venv, S_table tenv, A_exp a);
 
+Ty_ty tylook(S_table tenv, S_symbol type_name, int pos);
 #endif

@@ -8,3 +8,4 @@ struct std_function {
 };
 
 void add_std_functions(S_table venv);
+void add_std_types(S_table tenv); 

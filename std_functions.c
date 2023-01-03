@@ -40,3 +40,9 @@ void add_std_functions(S_table venv) {
     S_enter(venv, S_Symbol(f.name), E_FunEntry(f.arguments, f.return_type)); 
   }
 }
+
+void add_std_types(S_table tenv) {
+  S_enter(tenv, S_Symbol("int"), Ty_Int());
+  S_enter(tenv, S_Symbol("string"),Ty_String()); 
+
+}
