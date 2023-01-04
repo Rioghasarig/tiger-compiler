@@ -14,7 +14,7 @@ void yyerror(const char *s)
 %}
 
 /* Enable run-time traces (yydebug). */
-%define parse.trace
+//%define parse.trace
 
 %union {
 	int pos;

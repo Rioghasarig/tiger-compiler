@@ -18,11 +18,21 @@ struct expty transVar(S_table venv, S_table tenv, A_var v) {
       else {
 	EM_error(v->pos, "undefined variable %s",
 		 S_name(v->u.simple));
-	return (struct expty) {NULL, Ty_Int()};
+	return (struct expty) {NULL, Ty_Nil()};
       }
     }
     case A_fieldVar:  {
-      EM_error(v->pos, "Haven't implemented A_fieldVar yet");
+      E_enventry x = S_look(venv, v->u.field.var->u.simple);
+      Ty_ty recordTy = x->u.var.ty;
+      Ty_fieldList record = recordTy->u.record;
+      while(record != NULL) {
+	Ty_field head = record->head;
+	if(head->name == v->u.field.sym) {
+	  struct expty result = {NULL, head->ty};
+	  return result;
+	}
+	record = record->tail;
+      }
       return (struct expty) {NULL, Ty_Nil()};
     }
     case A_subscriptVar: {
@@ -203,17 +213,25 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
       A_oper  oper = a->u.op.oper;
       struct expty left = transExp(venv, tenv, a->u.op.left);
       struct expty right = transExp(venv, tenv, a->u.op.right);
-      if (oper == A_plusOp) {
-	if(left.ty->kind != Ty_int)
-	  EM_error(a->u.op.left->pos, "integer required");
-	if(right.ty->kind != Ty_int)
-	  EM_error(a->u.op.right->pos, "integer required");
-	struct expty result;
-	result.exp = NULL;
-	result.ty = Ty_Int();
-	return result;
-	}
-	break;
+
+      if(oper == A_plusOp || oper == A_minusOp || oper == A_timesOp ||
+	 oper == A_divideOp) {
+	 if(left.ty->kind != Ty_int)
+	   EM_error(a->u.op.left->pos, "integer required");
+	 if(right.ty->kind != Ty_int)
+	   EM_error(a->u.op.right->pos, "integer required");
+      }
+      if(oper == A_eqOp || oper == A_neqOp || oper == A_ltOp ||
+	 oper == A_gtOp  || oper == A_geOp || oper == A_andOp ||
+	 oper == A_orOp) {
+	
+	if(left.ty->kind != right.ty->kind)
+	  EM_error(a->pos, "Operand types must match"); 
+      }
+      struct expty result;
+      result.exp = NULL;
+      result.ty = Ty_Int();
+      return result;
     }
     case A_intExp: {
       struct expty result;
