@@ -14,7 +14,7 @@ void yyerror(const char *s)
 %}
 
 /* Enable run-time traces (yydebug). */
-//%define parse.trace
+%define parse.trace
 
 %union {
 	int pos;
@@ -110,7 +110,7 @@ exp: while_loop {$$ = $1;}
 exp: for_loop {$$=$1;}
 exp: let_statement {$$=$1;}
 
-/*expression_sequence:  {$$ = (A_expList) NULL;}*/
+expression_sequence:  {$$ = (A_expList) NULL;}
 expression_sequence: exp exp_seq_tail {$$ = A_ExpList($1, $2);}
 
 exp_seq_tail:  /*empty*/ {$$ = NULL;}

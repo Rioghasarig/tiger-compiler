@@ -78,14 +78,30 @@ Ty_fieldList Ty_fieldListFromAST(S_table tenv, A_fieldList fieldList) {
 
 Ty_ty transTy(S_table tenv, A_ty ty) {
   if(ty->kind == A_arrayTy) {
-    if(strcmp(ty->u.array->name, "int") == 0)
-       return Ty_Array(Ty_Int()); 
+    Ty_ty type = S_look(tenv, ty->u.name); 
+    if(type != NULL)
+       return Ty_Array(type);
+    else {
+      EM_error(ty->pos, "unhandle type of array");
+      return NULL;
+    }
   }
-  if(ty->kind == A_recordTy) {
+  else if(ty->kind == A_recordTy) {
     Ty_fieldList fieldList = Ty_fieldListFromAST(tenv, ty->u.record);
     return Ty_Record(fieldList); 
   }
-  return NULL;
+  else if(ty->kind == A_nameTy) {
+    S_symbol name = ty->u.name;
+    Ty_ty type = S_look(tenv,name);
+    if(ty == NULL) {
+      EM_error(ty->pos, "unknown type %s", S_name(name));
+    }
+    return type; 
+  }
+  else {
+    EM_error(ty->pos, "unhandled type kind");
+    return NULL;
+  }
 }
 
 
@@ -109,9 +125,9 @@ Ty_tyList makeFormalTyList(S_table tenv, A_fieldList params) {
   A_field params_head = params->head;
   
   Ty_ty head_type = tylook(tenv, params_head->typ,params_head->pos);
-  Ty_ty nameList_head = Ty_Name(params_head->name, head_type);
+  //Ty_ty nameList_head = Ty_Name(params_head->name, head_type);
 
-  Ty_tyList head = Ty_TyList(nameList_head, NULL);
+  Ty_tyList head = Ty_TyList(head_type, NULL);
   Ty_tyList prev = NULL;
   
   Ty_tyList newNode;
@@ -119,8 +135,8 @@ Ty_tyList makeFormalTyList(S_table tenv, A_fieldList params) {
     params = params->tail;
     params_head = params->head; 
     head_type = tylook(tenv, params_head->typ, params_head->pos);
-    nameList_head = Ty_Name(params_head->name, head_type);
-    newNode = Ty_TyList(nameList_head, NULL);
+    //nameList_head = Ty_Name(params_head->name, head_type);
+    newNode = Ty_TyList(head_type, NULL);
     if(head->tail == NULL) {
       head->tail = newNode;
     }
@@ -140,10 +156,11 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
       break;
     }
     case A_typeDec: {
-      S_enter(tenv, d->u.type->name,
-	      Ty_Name(d->u.type->name, NULL)); 
-	     
+      //Ty_ty nameType = Ty_Name(d->u.type->name, NULL);      
+      //S_enter(tenv, d->u.type->name, nameType); 	     
       Ty_ty type = transTy(tenv, d->u.type->ty);
+      Ty_ty nameType = S_look(tenv, d->u.type->name); 
+      nameType->u.name.ty = type; 
       break;
     }
     case A_functionDec: {
@@ -186,6 +203,35 @@ struct expty call_exp(S_table venv, S_table tenv, A_exp call_exp) {
 
 }
 
+bool detect_cycles(S_table tenv, S_symbol name) {
+  Ty_ty tortoise = S_look(tenv, name);
+  if(tortoise->kind != Ty_name)
+    return 0;
+  tortoise = tortoise->u.name.ty;
+  Ty_ty hare = S_look(tenv, name);
+  if(hare->kind != Ty_name)
+    return 0;
+  hare = hare->u.name.ty;
+  if(hare->kind != Ty_name)
+    return 0;
+  hare = hare->u.name.ty;
+  while (1) {
+    if(tortoise->u.name.sym == hare->u.name.sym) {
+      return 1; 
+    }
+    
+    if(tortoise->kind != Ty_name)
+      return 0;
+    tortoise = tortoise->u.name.ty;
+
+    if(hare->kind != Ty_name)
+      return 0;
+    hare = hare->u.name.ty;
+    if(hare->kind != Ty_name)
+      return 0;
+    hare = hare->u.name.ty; 
+  }
+}
 struct expty transExp(S_table venv, S_table tenv, A_exp a) {
   switch(a->kind) {
     case A_letExp: {
@@ -193,8 +239,22 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
       A_decList d;
       S_beginScope(venv);
       S_beginScope(tenv);
+      for (d = a->u.let.decs; d; d=d->tail)  {
+	if(d->head->kind == A_typeDec) {
+	  Ty_ty nameType = Ty_Name(d->head->u.type->name, NULL); 
+	  S_enter(tenv, d->head->u.type->name, nameType); 	  
+	}
+      }
       for (d = a->u.let.decs; d; d=d->tail) {
-	transDec(venv, tenv, d->head);	
+	transDec(venv, tenv, d->head);
+      }
+      for (d = a->u.let.decs; d; d=d->tail) {
+	if(d->head->kind == A_typeDec) {
+	  if(detect_cycles(tenv, d->head->u.type->name)) {
+	    EM_error(a->pos,"Cycle in definition of %s", S_name(d->head->u.type->name)); 
+	  }
+	    
+	}
       }
       A_expList p;
       for(p = a->u.let.body; p != NULL; p = p->tail) {
@@ -221,12 +281,18 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
 	 if(right.ty->kind != Ty_int)
 	   EM_error(a->u.op.right->pos, "integer required");
       }
-      if(oper == A_eqOp || oper == A_neqOp || oper == A_ltOp ||
+      if(oper == A_neqOp || oper == A_ltOp ||
 	 oper == A_gtOp  || oper == A_geOp || oper == A_andOp ||
 	 oper == A_orOp) {
 	
 	if(left.ty->kind != right.ty->kind)
 	  EM_error(a->pos, "Operand types must match"); 
+      }
+      if(oper == A_eqOp) {
+	if(left.ty->kind != right.ty->kind &&
+	   left.ty->kind != Ty_nil &&
+	   right.ty->kind != Ty_nil)
+	  EM_error(a->pos, "Operands of '=' must have same types or be nil"); 
       }
       struct expty result;
       result.exp = NULL;
@@ -245,12 +311,18 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
     }
     case A_seqExp: {
       A_expList seq = a->u.seq;
-      struct expty head = transExp(venv, tenv, seq->head);
-      while(seq->tail !=NULL) {
-	seq = seq->tail;
-	head = transExp(venv, tenv, seq->head);	
+      if(seq != NULL) {
+	struct expty head = transExp(venv, tenv, seq->head);
+	while(seq->tail !=NULL) {
+	  seq = seq->tail;
+	  head = transExp(venv, tenv, seq->head);	
+	}
+	return head;
       }
-      return head;
+      else {
+	struct expty result = {NULL, Ty_Nil()};
+	return result;
+      }
     }
     case A_recordExp: {
       S_symbol typ = a->u.record.typ;
@@ -279,7 +351,8 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
     }
     case A_arrayExp: {
       S_symbol typ = a->u.array.typ;
-      Ty_ty ty = S_look(tenv, typ);
+      Ty_ty nameType = S_look(tenv, typ);
+      Ty_ty ty = nameType->u.name.ty;
       if(ty && ty->kind == Ty_array) {
 	struct expty result = {NULL, ty};
 	return result;
@@ -313,6 +386,14 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
       
       if(elsee) {
 	 struct expty elsee_result = transExp(venv, tenv, elsee);
+	 if (then_result.ty->kind != elsee_result.ty->kind) {
+	   EM_error(a->pos, "Then and Else expressions must have matching type"); 
+	 }
+      }
+      else {
+	if (then_result.ty->kind != Ty_nil) {
+	  EM_error(a->pos, "Then expression must be of type Nil");
+	}
       }
       return then_result; 
     }
@@ -329,9 +410,24 @@ struct expty transExp(S_table venv, S_table tenv, A_exp a) {
       return body_result; 
     }
     case A_forExp: {
+      S_beginScope(venv);
+      S_symbol var = a->u.forr.var;
+      S_enter(venv, var, E_VarEntry(Ty_Int()));
       A_exp body = a->u.forr.body;
+
+      A_exp lo = a->u.forr.lo;
+      A_exp hi = a->u.forr.hi;
+      struct expty lo_result = transExp(venv, tenv, lo);
+      struct expty hi_result = transExp(venv, tenv, hi);
+      if(lo_result.ty->kind != Ty_int) {
+	EM_error(lo->pos, "For loop lo should be int"); 
+      }
+      if(hi_result.ty->kind != Ty_int) {
+	EM_error(hi->pos, "For loop hi should be int");
+      }
       struct expty body_result = transExp(venv, tenv, body);
-      return body_result; 
+      return body_result;
+      S_endScope(venv); 
     }
     default: {
       struct expty result = {NULL, Ty_Nil()};

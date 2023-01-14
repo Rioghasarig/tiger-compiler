@@ -1,5 +1,5 @@
-a.out: parsetest.o y.tab.o lex.yy.o errormsg.o util.o absyn.o symbol.o table.o semant.o types.o env.o std_functions.o
-	cc -g parsetest.o y.tab.o lex.yy.o errormsg.o util.o absyn.o symbol.o \
+typecheck: parsetest.o y.tab.o lex.yy.o errormsg.o util.o absyn.o symbol.o table.o semant.o types.o env.o std_functions.o
+	cc -o typecheck -g parsetest.o y.tab.o lex.yy.o errormsg.o util.o absyn.o symbol.o \
 	    table.o semant.o types.o env.o std_functions.o
 
 std_functions.o: std_functions.c std_functions.h

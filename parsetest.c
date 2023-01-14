@@ -5,13 +5,13 @@
 #include "absyn.h"
 #include "semant.h"
 extern int yyparse(void);
-//extern int yydebug;
+extern int yydebug;
 extern A_exp absyn_root;
 
 
 void parse(string fname) 
 {EM_reset(fname);
-  // yydebug = 1;
+   yydebug = 1;
  if (yyparse() == 0) /* parsing worked */
    fprintf(stderr,"Parsing successful!\n");
  else {
