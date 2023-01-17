@@ -53,7 +53,7 @@ AST::ExpressionPtr absyn_root;
 
 
 // Unqualified %code blocks.
-#line 36 "tiger.yy"
+#line 34 "tiger.yy"
 
 # include "driver.hh"
 
@@ -159,7 +159,6 @@ namespace yy {
 #else
     :
 #endif
-      yy_lac_established_ (false),
       drv (drv_yyarg)
   {}
 
@@ -222,6 +221,11 @@ namespace yy {
         value.YY_MOVE_OR_COPY< AST::ExpressionPtr > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_lvalue: // lvalue
+      case symbol_kind::S_lvalue_extension: // lvalue_extension
+        value.YY_MOVE_OR_COPY< AST::VariablePtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_INT: // INT
         value.YY_MOVE_OR_COPY< int > (YY_MOVE (that.value));
         break;
@@ -248,6 +252,11 @@ namespace yy {
     {
       case symbol_kind::S_exp: // exp
         value.move< AST::ExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_lvalue: // lvalue
+      case symbol_kind::S_lvalue_extension: // lvalue_extension
+        value.move< AST::VariablePtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
@@ -278,6 +287,11 @@ namespace yy {
         value.copy< AST::ExpressionPtr > (that.value);
         break;
 
+      case symbol_kind::S_lvalue: // lvalue
+      case symbol_kind::S_lvalue_extension: // lvalue_extension
+        value.copy< AST::VariablePtr > (that.value);
+        break;
+
       case symbol_kind::S_INT: // INT
         value.copy< int > (that.value);
         break;
@@ -303,6 +317,11 @@ namespace yy {
     {
       case symbol_kind::S_exp: // exp
         value.move< AST::ExpressionPtr > (that.value);
+        break;
+
+      case symbol_kind::S_lvalue: // lvalue
+      case symbol_kind::S_lvalue_extension: // lvalue_extension
+        value.move< AST::VariablePtr > (that.value);
         break;
 
       case symbol_kind::S_INT: // INT
@@ -454,10 +473,6 @@ namespace yy {
     /// The return value of parse ().
     int yyresult;
 
-    // Discard the LAC context in case there still is one left from a
-    // previous invocation.
-    yy_lac_discard_ ("init");
-
 #if YY_EXCEPTIONS
     try
 #endif // YY_EXCEPTIONS
@@ -532,8 +547,6 @@ namespace yy {
     yyn += yyla.kind ();
     if (yyn < 0 || yylast_ < yyn || yycheck_[yyn] != yyla.kind ())
       {
-        if (!yy_lac_establish_ (yyla.kind ()))
-          goto yyerrlab;
         goto yydefault;
       }
 
@@ -543,9 +556,6 @@ namespace yy {
       {
         if (yy_table_value_is_error_ (yyn))
           goto yyerrlab;
-        if (!yy_lac_establish_ (yyla.kind ()))
-          goto yyerrlab;
-
         yyn = -yyn;
         goto yyreduce;
       }
@@ -556,7 +566,6 @@ namespace yy {
 
     // Shift the lookahead token.
     yypush_ ("Shifting", state_type (yyn), YY_MOVE (yyla));
-    yy_lac_discard_ ("shift");
     goto yynewstate;
 
 
@@ -585,6 +594,11 @@ namespace yy {
     {
       case symbol_kind::S_exp: // exp
         yylhs.value.emplace< AST::ExpressionPtr > ();
+        break;
+
+      case symbol_kind::S_lvalue: // lvalue
+      case symbol_kind::S_lvalue_extension: // lvalue_extension
+        yylhs.value.emplace< AST::VariablePtr > ();
         break;
 
       case symbol_kind::S_INT: // INT
@@ -616,14 +630,44 @@ namespace yy {
         {
           switch (yyn)
             {
+  case 2: // program: exp
+#line 72 "tiger.yy"
+             {absyn_root = yystack_[0].value.as < AST::ExpressionPtr > ();}
+#line 637 "tiger.tab.cc"
+    break;
+
   case 3: // exp: INT
-#line 75 "tiger.yy"
+#line 74 "tiger.yy"
          {yylhs.value.as < AST::ExpressionPtr > () = AST::IntExpression::Node(0, yystack_[0].value.as < int > ());}
-#line 623 "tiger.tab.cc"
+#line 643 "tiger.tab.cc"
+    break;
+
+  case 71: // lvalue: ID lvalue_extension
+#line 174 "tiger.yy"
+                            {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ()));}
+#line 649 "tiger.tab.cc"
+    break;
+
+  case 72: // lvalue_extension: %empty
+#line 176 "tiger.yy"
+                               {yylhs.value.as < AST::VariablePtr > () = NULL;}
+#line 655 "tiger.tab.cc"
+    break;
+
+  case 73: // lvalue_extension: DOT ID lvalue_extension
+#line 177 "tiger.yy"
+                                          {yylhs.value.as < AST::VariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); if(yystack_[0].value.as < AST::VariablePtr > () != NULL) yystack_[0].value.as < AST::VariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
+#line 661 "tiger.tab.cc"
+    break;
+
+  case 74: // lvalue_extension: LBRACK exp RBRACK lvalue_extension
+#line 178 "tiger.yy"
+                                                     {yylhs.value.as < AST::VariablePtr > () = AST::SubscriptVariable::PartialNode(0, yystack_[2].value.as < AST::ExpressionPtr > ());if(yystack_[0].value.as < AST::VariablePtr > () != NULL) yystack_[0].value.as < AST::VariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
+#line 667 "tiger.tab.cc"
     break;
 
 
-#line 627 "tiger.tab.cc"
+#line 671 "tiger.tab.cc"
 
             default:
               break;
@@ -655,8 +699,7 @@ namespace yy {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        context yyctx (*this, yyla);
-        std::string msg = yysyntax_error_ (yyctx);
+        std::string msg = YY_("syntax error");
         error (yyla.location, YY_MOVE (msg));
       }
 
@@ -735,7 +778,6 @@ namespace yy {
       YYLLOC_DEFAULT (error_token.location, yyerror_range, 2);
 
       // Shift the error token.
-      yy_lac_discard_ ("error recovery");
       error_token.state = state_type (yyn);
       yypush_ ("Shifting", YY_MOVE (error_token));
     }
@@ -802,291 +844,20 @@ namespace yy {
     error (yyexc.location, yyexc.what ());
   }
 
+#if YYDEBUG || 0
   const char *
   parser::symbol_name (symbol_kind_type yysymbol)
   {
-    static const char *const yy_sname[] =
-    {
-    "end of file", "error", "invalid token", "ID", "STRING", "INT", "COMMA",
-  "COLON", "SEMICOLON", "LPAREN", "RPAREN", "LBRACK", "RBRACK", "LBRACE",
-  "RBRACE", "DOT", "PLUS", "MINUS", "TIMES", "DIVIDE", "EQ", "NEQ", "LT",
-  "LE", "GT", "GE", "AND", "OR", "ASSIGN", "ARRAY", "IF", "THEN", "ELSE",
-  "WHILE", "FOR", "TO", "DO", "LET", "IN", "END", "OF", "BREAK", "NIL",
-  "FUNCTION", "VAR", "TYPE", "UMINUS", "$accept", "program", "exp",
-  "expression_sequence", "exp_seq_tail", "function_call", "function_args",
-  "function_args_tail", "arithmetic_exp", "negation_exp", "comparison_exp",
-  "boolean_exp", "record_creation", "record_list", "record_list_extension",
-  "array_creation", "assignment_exp", "if_statement", "while_loop",
-  "for_loop", "let_statement", "declaration_sequence", "declaration",
-  "type_declaration", "type", "type_fields", "type_fields_extension",
-  "variable_declaration", "function_declaration", "lvalue",
-  "lvalue_extension", YY_NULLPTR
-    };
-    return yy_sname[yysymbol];
+    return yytname_[yysymbol];
   }
-
-
-
-  // parser::context.
-  parser::context::context (const parser& yyparser, const symbol_type& yyla)
-    : yyparser_ (yyparser)
-    , yyla_ (yyla)
-  {}
-
-  int
-  parser::context::expected_tokens (symbol_kind_type yyarg[], int yyargn) const
-  {
-    // Actual number of expected tokens
-    int yycount = 0;
-
-#if YYDEBUG
-    // Execute LAC once. We don't care if it is successful, we
-    // only do it for the sake of debugging output.
-    if (!yyparser_.yy_lac_established_)
-      yyparser_.yy_lac_check_ (yyla_.kind ());
-#endif
-
-    for (int yyx = 0; yyx < YYNTOKENS; ++yyx)
-      {
-        symbol_kind_type yysym = YY_CAST (symbol_kind_type, yyx);
-        if (yysym != symbol_kind::S_YYerror
-            && yysym != symbol_kind::S_YYUNDEF
-            && yyparser_.yy_lac_check_ (yysym))
-          {
-            if (!yyarg)
-              ++yycount;
-            else if (yycount == yyargn)
-              return 0;
-            else
-              yyarg[yycount++] = yysym;
-          }
-      }
-    if (yyarg && yycount == 0 && 0 < yyargn)
-      yyarg[0] = symbol_kind::S_YYEMPTY;
-    return yycount;
-  }
+#endif // #if YYDEBUG || 0
 
 
 
 
-  bool
-  parser::yy_lac_check_ (symbol_kind_type yytoken) const
-  {
-    // Logically, the yylac_stack's lifetime is confined to this function.
-    // Clear it, to get rid of potential left-overs from previous call.
-    yylac_stack_.clear ();
-    // Reduce until we encounter a shift and thereby accept the token.
-#if YYDEBUG
-    YYCDEBUG << "LAC: checking lookahead " << symbol_name (yytoken) << ':';
-#endif
-    std::ptrdiff_t lac_top = 0;
-    while (true)
-      {
-        state_type top_state = (yylac_stack_.empty ()
-                                ? yystack_[lac_top].state
-                                : yylac_stack_.back ());
-        int yyrule = yypact_[+top_state];
-        if (yy_pact_value_is_default_ (yyrule)
-            || (yyrule += yytoken) < 0 || yylast_ < yyrule
-            || yycheck_[yyrule] != yytoken)
-          {
-            // Use the default action.
-            yyrule = yydefact_[+top_state];
-            if (yyrule == 0)
-              {
-                YYCDEBUG << " Err\n";
-                return false;
-              }
-          }
-        else
-          {
-            // Use the action from yytable.
-            yyrule = yytable_[yyrule];
-            if (yy_table_value_is_error_ (yyrule))
-              {
-                YYCDEBUG << " Err\n";
-                return false;
-              }
-            if (0 < yyrule)
-              {
-                YYCDEBUG << " S" << yyrule << '\n';
-                return true;
-              }
-            yyrule = -yyrule;
-          }
-        // By now we know we have to simulate a reduce.
-        YYCDEBUG << " R" << yyrule - 1;
-        // Pop the corresponding number of values from the stack.
-        {
-          std::ptrdiff_t yylen = yyr2_[yyrule];
-          // First pop from the LAC stack as many tokens as possible.
-          std::ptrdiff_t lac_size = std::ptrdiff_t (yylac_stack_.size ());
-          if (yylen < lac_size)
-            {
-              yylac_stack_.resize (std::size_t (lac_size - yylen));
-              yylen = 0;
-            }
-          else if (lac_size)
-            {
-              yylac_stack_.clear ();
-              yylen -= lac_size;
-            }
-          // Only afterwards look at the main stack.
-          // We simulate popping elements by incrementing lac_top.
-          lac_top += yylen;
-        }
-        // Keep top_state in sync with the updated stack.
-        top_state = (yylac_stack_.empty ()
-                     ? yystack_[lac_top].state
-                     : yylac_stack_.back ());
-        // Push the resulting state of the reduction.
-        state_type state = yy_lr_goto_state_ (top_state, yyr1_[yyrule]);
-        YYCDEBUG << " G" << int (state);
-        yylac_stack_.push_back (state);
-      }
-  }
-
-  // Establish the initial context if no initial context currently exists.
-  bool
-  parser::yy_lac_establish_ (symbol_kind_type yytoken)
-  {
-    /* Establish the initial context for the current lookahead if no initial
-       context is currently established.
-
-       We define a context as a snapshot of the parser stacks.  We define
-       the initial context for a lookahead as the context in which the
-       parser initially examines that lookahead in order to select a
-       syntactic action.  Thus, if the lookahead eventually proves
-       syntactically unacceptable (possibly in a later context reached via a
-       series of reductions), the initial context can be used to determine
-       the exact set of tokens that would be syntactically acceptable in the
-       lookahead's place.  Moreover, it is the context after which any
-       further semantic actions would be erroneous because they would be
-       determined by a syntactically unacceptable token.
-
-       yy_lac_establish_ should be invoked when a reduction is about to be
-       performed in an inconsistent state (which, for the purposes of LAC,
-       includes consistent states that don't know they're consistent because
-       their default reductions have been disabled).
-
-       For parse.lac=full, the implementation of yy_lac_establish_ is as
-       follows.  If no initial context is currently established for the
-       current lookahead, then check if that lookahead can eventually be
-       shifted if syntactic actions continue from the current context.  */
-    if (yy_lac_established_)
-      return true;
-    else
-      {
-#if YYDEBUG
-        YYCDEBUG << "LAC: initial context established for "
-                 << symbol_name (yytoken) << '\n';
-#endif
-        yy_lac_established_ = true;
-        return yy_lac_check_ (yytoken);
-      }
-  }
-
-  // Discard any previous initial lookahead context.
-  void
-  parser::yy_lac_discard_ (const char* event)
-  {
-   /* Discard any previous initial lookahead context because of Event,
-      which may be a lookahead change or an invalidation of the currently
-      established initial context for the current lookahead.
-
-      The most common example of a lookahead change is a shift.  An example
-      of both cases is syntax error recovery.  That is, a syntax error
-      occurs when the lookahead is syntactically erroneous for the
-      currently established initial context, so error recovery manipulates
-      the parser stacks to try to find a new initial context in which the
-      current lookahead is syntactically acceptable.  If it fails to find
-      such a context, it discards the lookahead.  */
-    if (yy_lac_established_)
-      {
-        YYCDEBUG << "LAC: initial context discarded due to "
-                 << event << '\n';
-        yy_lac_established_ = false;
-      }
-  }
 
 
-  int
-  parser::yy_syntax_error_arguments_ (const context& yyctx,
-                                                 symbol_kind_type yyarg[], int yyargn) const
-  {
-    /* There are many possibilities here to consider:
-       - If this state is a consistent state with a default action, then
-         the only way this function was invoked is if the default action
-         is an error action.  In that case, don't check for expected
-         tokens because there are none.
-       - The only way there can be no lookahead present (in yyla) is
-         if this state is a consistent state with a default action.
-         Thus, detecting the absence of a lookahead is sufficient to
-         determine that there is no unexpected or expected token to
-         report.  In that case, just report a simple "syntax error".
-       - Don't assume there isn't a lookahead just because this state is
-         a consistent state with a default action.  There might have
-         been a previous inconsistent state, consistent state with a
-         non-default action, or user semantic action that manipulated
-         yyla.  (However, yyla is currently not documented for users.)
-         In the first two cases, it might appear that the current syntax
-         error should have been detected in the previous state when
-         yy_lac_check was invoked.  However, at that time, there might
-         have been a different syntax error that discarded a different
-         initial context during error recovery, leaving behind the
-         current lookahead.
-    */
 
-    if (!yyctx.lookahead ().empty ())
-      {
-        if (yyarg)
-          yyarg[0] = yyctx.token ();
-        int yyn = yyctx.expected_tokens (yyarg ? yyarg + 1 : yyarg, yyargn - 1);
-        return yyn + 1;
-      }
-    return 0;
-  }
-
-  // Generate an error message.
-  std::string
-  parser::yysyntax_error_ (const context& yyctx) const
-  {
-    // Its maximum.
-    enum { YYARGS_MAX = 5 };
-    // Arguments of yyformat.
-    symbol_kind_type yyarg[YYARGS_MAX];
-    int yycount = yy_syntax_error_arguments_ (yyctx, yyarg, YYARGS_MAX);
-
-    char const* yyformat = YY_NULLPTR;
-    switch (yycount)
-      {
-#define YYCASE_(N, S)                         \
-        case N:                               \
-          yyformat = S;                       \
-        break
-      default: // Avoid compiler warnings.
-        YYCASE_ (0, YY_("syntax error"));
-        YYCASE_ (1, YY_("syntax error, unexpected %s"));
-        YYCASE_ (2, YY_("syntax error, unexpected %s, expecting %s"));
-        YYCASE_ (3, YY_("syntax error, unexpected %s, expecting %s or %s"));
-        YYCASE_ (4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
-        YYCASE_ (5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
-#undef YYCASE_
-      }
-
-    std::string yyres;
-    // Argument number.
-    std::ptrdiff_t yyi = 0;
-    for (char const* yyp = yyformat; *yyp; ++yyp)
-      if (yyp[0] == '%' && yyp[1] == 's' && yyi < yycount)
-        {
-          yyres += symbol_name (yyarg[yyi++]);
-          ++yyp;
-        }
-      else
-        yyres += *yyp;
-    return yyres;
-  }
 
 
   const signed char parser::yypact_ninf_ = -44;
@@ -1279,20 +1050,42 @@ namespace yy {
   };
 
 
+#if YYDEBUG
+  // YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
+  // First, the terminals, then, starting at \a YYNTOKENS, nonterminals.
+  const char*
+  const parser::yytname_[] =
+  {
+  "\"end of file\"", "error", "\"invalid token\"", "ID", "STRING", "INT",
+  "COMMA", "COLON", "SEMICOLON", "LPAREN", "RPAREN", "LBRACK", "RBRACK",
+  "LBRACE", "RBRACE", "DOT", "PLUS", "MINUS", "TIMES", "DIVIDE", "EQ",
+  "NEQ", "LT", "LE", "GT", "GE", "AND", "OR", "ASSIGN", "ARRAY", "IF",
+  "THEN", "ELSE", "WHILE", "FOR", "TO", "DO", "LET", "IN", "END", "OF",
+  "BREAK", "NIL", "FUNCTION", "VAR", "TYPE", "UMINUS", "$accept",
+  "program", "exp", "expression_sequence", "exp_seq_tail", "function_call",
+  "function_args", "function_args_tail", "arithmetic_exp", "negation_exp",
+  "comparison_exp", "boolean_exp", "record_creation", "record_list",
+  "record_list_extension", "array_creation", "assignment_exp",
+  "if_statement", "while_loop", "for_loop", "let_statement",
+  "declaration_sequence", "declaration", "type_declaration", "type",
+  "type_fields", "type_fields_extension", "variable_declaration",
+  "function_declaration", "lvalue", "lvalue_extension", YY_NULLPTR
+  };
+#endif
 
 
 #if YYDEBUG
   const unsigned char
   parser::yyrline_[] =
   {
-       0,    73,    73,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    94,    95,    97,    98,   100,   102,   103,   105,   106,
-     109,   110,   111,   112,   114,   116,   117,   118,   119,   120,
-     121,   123,   124,   127,   129,   131,   132,   135,   138,   140,
-     142,   144,   146,   148,   150,   151,   153,   154,   155,   157,
-     159,   160,   161,   163,   164,   166,   167,   169,   170,   172,
-     173,   175,   177,   178,   179
+       0,    72,    72,    74,    75,    76,    77,    78,    79,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+      91,    93,    94,    96,    97,    99,   101,   102,   104,   105,
+     108,   109,   110,   111,   113,   115,   116,   117,   118,   119,
+     120,   122,   123,   126,   128,   130,   131,   134,   137,   139,
+     141,   143,   145,   147,   149,   150,   152,   153,   154,   156,
+     158,   159,   160,   162,   163,   165,   166,   168,   169,   171,
+     172,   174,   176,   177,   178
   };
 
   void
@@ -1324,9 +1117,9 @@ namespace yy {
 
 
 } // yy
-#line 1328 "tiger.tab.cc"
+#line 1121 "tiger.tab.cc"
 
-#line 180 "tiger.yy"
+#line 179 "tiger.yy"
 
 
 void

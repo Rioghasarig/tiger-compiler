@@ -14,7 +14,7 @@ tiger.tab.o: tiger.tab.cc
 	g++ -g -c tiger.tab.cc
 
 tiger.tab.cc: tiger.yy
-	bison -dv tiger.yy -Wcounterexamples
+	bison  --debug -dv tiger.yy -Wcounterexamples
 
 tiger.tab.hh: tiger.tab.cc
 	echo "tiger.tab.hh was created at the same time as tiger.tab.cc"

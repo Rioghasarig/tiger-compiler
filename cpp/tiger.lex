@@ -25,12 +25,21 @@ yy::location loc;
 
 %x string_c
 %x comment_c
-
+%{
+  // Code run each time a pattern is matched.
+  # define YY_USER_ACTION  loc.columns (yyleng);
+%}
 %%
-[ \r\t] { continue;}
-\n	 { 
-          EM_newline(); continue;}
+%{
+  // A handy shortcut to the location held by the driver.
+  yy::location& loc = drv.location;
+  // Code run each time yylex is called.
+  loc.step ();
+%}
 
+[ \r\t] { loc.step (); continue;}
+\n	 { loc.lines (yyleng); loc.step ();
+         continue;}
 array { return yy::parser::make_ARRAY(loc);}
 if   { return yy::parser::make_IF(loc);}
 then { return yy::parser::make_THEN(loc);}
@@ -107,8 +116,6 @@ type   { return yy::parser::make_TYPE(loc);}
 
 .	 { EM_error(EM_tokPos,"illegal token");}
 %%
-
-
 void
 driver::scan_begin ()
 {

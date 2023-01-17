@@ -18,10 +18,11 @@ class Symbol;
 struct efield;
 struct field;
 using ExpressionPtr = std::shared_ptr<Expression>;
-using VariablePtr = std::shared_ptr<Variable>;
 using IntExpressionPtr = std::shared_ptr<IntExpression>;
 using StringExpressionPtr = std::shared_ptr<StringExpression>;
 using CallExpressionPtr = std::shared_ptr<CallExpression>;
+
+using VariablePtr = std::shared_ptr<Variable>;
 using DeclarationPtr = std::shared_ptr<Declaration>;
 
 using TypePtr = std::shared_ptr<Type>;
@@ -54,9 +55,9 @@ class ASTNode {
 using NodePtr = std::shared_ptr<ASTNode>;
 
 class Symbol {
-
   std::string name;
-  public:
+
+ public:
   Symbol(std::string name) : name(name){};
 
   static SymbolPtr Gen(std::string name) {
@@ -69,7 +70,7 @@ class Variable : public ASTNode {
  public:
   enum var_kind { simpleVar, fieldVar, subscriptVar };
   Variable(int pos, var_kind kind) : pos(pos), kind(kind) {}
-
+  virtual void set_var(VariablePtr v) {return;}
  private:
   int pos;
   var_kind kind;
@@ -81,7 +82,7 @@ class SimpleVariable : public Variable {
       : Variable(pos, simpleVar), name(name){};
 
   static VariablePtr Node(int pos, SymbolPtr name);
-
+ void set_var(VariablePtr v) {return;}
  private:
   SymbolPtr name;
 };
@@ -89,9 +90,13 @@ class SimpleVariable : public Variable {
 class FieldVariable : public Variable {
  public:
   FieldVariable(int pos, VariablePtr var, SymbolPtr field_name)
+      : Variable(pos, fieldVar), var(var), field_name(field_name) {}
+  FieldVariable(int pos, SymbolPtr field_name)
       : Variable(pos, fieldVar), field_name(field_name) {}
 
+  void set_var(VariablePtr v) { var = v; }
   static VariablePtr Node(int pos, VariablePtr var, SymbolPtr field_name);
+  static VariablePtr PartialNode(int pos, SymbolPtr field_name);
 
  private:
   VariablePtr var;
@@ -103,7 +108,12 @@ class SubscriptVariable : public Variable {
   SubscriptVariable(int pos, VariablePtr var, ExpressionPtr exp)
       : Variable(pos, subscriptVar), var(var), exp(exp) {}
 
+  SubscriptVariable(int pos, ExpressionPtr exp)
+      : Variable(pos, subscriptVar), exp(exp) {}
+
+  void set_var(VariablePtr v) { var = v; }
   static VariablePtr Node(int pos, VariablePtr var, ExpressionPtr exp);
+  static VariablePtr PartialNode(int pos, ExpressionPtr exp);
 
  private:
   VariablePtr var;

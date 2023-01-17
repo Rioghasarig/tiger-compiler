@@ -3,11 +3,13 @@
 #include "errormsg.h"
 #include "driver.hh"
 //extern A_exp absyn_root;
-
-
+#define PARSE_TRACE 1 
+#define SCAN_TRACE 1
 void parse(char *fname) 
 {
   driver drv; 
+  drv.trace_parsing = PARSE_TRACE;
+  //drv.trace_scanning = SCAN_TRACE;
   drv.parse(fname);
 // if (yyparse() == 0) /* parsing worked */
 //   fprintf(stderr,"Parsing successful!\n");

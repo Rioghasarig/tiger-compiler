@@ -30,8 +30,6 @@ AST::ExpressionPtr absyn_root;
 %locations
 
 %define parse.trace
-%define parse.error detailed
-%define parse.lac full
 
 %code {
 # include "driver.hh"
@@ -41,6 +39,7 @@ AST::ExpressionPtr absyn_root;
 %token <int> INT;
 
 %nterm <AST::ExpressionPtr> exp;
+%nterm <AST::VariablePtr> lvalue lvalue_extension; 
 
 %token 
   COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK 
@@ -70,7 +69,7 @@ AST::ExpressionPtr absyn_root;
  *  to replace the two dummy productions below with an actual grammar. 
  */
 
-program: exp 
+program: exp {absyn_root = $1;}
 
 exp: INT {$$ = AST::IntExpression::Node(0, $1);}
 exp: lvalue 
@@ -172,11 +171,11 @@ variable_declaration: VAR ID COLON ID ASSIGN exp
 function_declaration: FUNCTION ID LPAREN type_fields RPAREN EQ exp
 function_declaration: FUNCTION ID LPAREN type_fields RPAREN COLON ID EQ exp
 
-lvalue: ID lvalue_extension 
+lvalue: ID lvalue_extension {$$ = AST::SimpleVariable::Node(0, AST::Symbol::Gen($1));}
 
-lvalue_extension: /* empty */ 
-lvalue_extension: DOT ID lvalue_extension 
-lvalue_extension: LBRACK exp RBRACK lvalue_extension 
+lvalue_extension: /* empty */  {$$ = NULL;}
+lvalue_extension: DOT ID lvalue_extension {$$ = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen($2)); if($3 != NULL) $3->set_var($$);}
+lvalue_extension: LBRACK exp RBRACK lvalue_extension {$$ = AST::SubscriptVariable::PartialNode(0, $2);if($4 != NULL) $4->set_var($$);}
 %%
 
 void

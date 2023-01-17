@@ -244,10 +244,10 @@ Nonterminals, with rules where they appear
     function_declaration (75)
         on left: 68 69
         on right: 57
-    lvalue (76)
+    lvalue <AST::VariablePtr> (76)
         on left: 70
         on right: 3 47
-    lvalue_extension (77)
+    lvalue_extension <AST::VariablePtr> (77)
         on left: 71 72 73
         on right: 70 72 73
 

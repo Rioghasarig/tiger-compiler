@@ -412,12 +412,16 @@ namespace yy {
       // exp
       char dummy1[sizeof (AST::ExpressionPtr)];
 
+      // lvalue
+      // lvalue_extension
+      char dummy2[sizeof (AST::VariablePtr)];
+
       // INT
-      char dummy2[sizeof (int)];
+      char dummy3[sizeof (int)];
 
       // ID
       // STRING
-      char dummy3[sizeof (std::string)];
+      char dummy4[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -650,6 +654,11 @@ namespace yy {
         value.move< AST::ExpressionPtr > (std::move (that.value));
         break;
 
+      case symbol_kind::S_lvalue: // lvalue
+      case symbol_kind::S_lvalue_extension: // lvalue_extension
+        value.move< AST::VariablePtr > (std::move (that.value));
+        break;
+
       case symbol_kind::S_INT: // INT
         value.move< int > (std::move (that.value));
         break;
@@ -690,6 +699,20 @@ namespace yy {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const AST::ExpressionPtr& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, AST::VariablePtr&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const AST::VariablePtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -752,6 +775,11 @@ switch (yykind)
         value.template destroy< AST::ExpressionPtr > ();
         break;
 
+      case symbol_kind::S_lvalue: // lvalue
+      case symbol_kind::S_lvalue_extension: // lvalue_extension
+        value.template destroy< AST::VariablePtr > ();
+        break;
+
       case symbol_kind::S_INT: // INT
         value.template destroy< int > ();
         break;
@@ -768,11 +796,14 @@ switch (yykind)
         Base::clear ();
       }
 
+#if YYDEBUG || 0
       /// The user-facing name of this symbol.
       const char *name () const YY_NOEXCEPT
       {
         return parser::symbol_name (this->kind ());
       }
+#endif // #if YYDEBUG || 0
+
 
       /// Backward compatibility (Bison 3.6).
       symbol_kind_type type_get () const YY_NOEXCEPT;
@@ -930,9 +961,12 @@ switch (yykind)
     /// Report a syntax error.
     void error (const syntax_error& err);
 
+#if YYDEBUG || 0
     /// The user-facing name of the symbol whose (internal) number is
     /// YYSYMBOL.  No bounds checking.
     static const char *symbol_name (symbol_kind_type yysymbol);
+#endif // #if YYDEBUG || 0
+
 
     // Implementation of make_symbol for each token kind.
 #if 201103L <= YY_CPLUSPLUS
@@ -1642,24 +1676,6 @@ switch (yykind)
 #endif
 
 
-    class context
-    {
-    public:
-      context (const parser& yyparser, const symbol_type& yyla);
-      const symbol_type& lookahead () const YY_NOEXCEPT { return yyla_; }
-      symbol_kind_type token () const YY_NOEXCEPT { return yyla_.kind (); }
-      const location_type& location () const YY_NOEXCEPT { return yyla_.location; }
-
-      /// Put in YYARG at most YYARGN of the expected tokens, and return the
-      /// number of tokens stored in YYARG.  If YYARG is null, return the
-      /// number of expected tokens (guaranteed to be less than YYNTOKENS).
-      int expected_tokens (symbol_kind_type yyarg[], int yyargn) const;
-
-    private:
-      const parser& yyparser_;
-      const symbol_type& yyla_;
-    };
-
   private:
 #if YY_CPLUSPLUS < 201103L
     /// Non copyable.
@@ -1668,27 +1684,10 @@ switch (yykind)
     parser& operator= (const parser&);
 #endif
 
-    /// Check the lookahead yytoken.
-    /// \returns  true iff the token will be eventually shifted.
-    bool yy_lac_check_ (symbol_kind_type yytoken) const;
-    /// Establish the initial context if no initial context currently exists.
-    /// \returns  true iff the token will be eventually shifted.
-    bool yy_lac_establish_ (symbol_kind_type yytoken);
-    /// Discard any previous initial lookahead context because of event.
-    /// \param event  the event which caused the lookahead to be discarded.
-    ///               Only used for debbuging output.
-    void yy_lac_discard_ (const char* event);
 
     /// Stored state numbers (used for stacks).
     typedef unsigned char state_type;
 
-    /// The arguments of the error message.
-    int yy_syntax_error_arguments_ (const context& yyctx,
-                                    symbol_kind_type yyarg[], int yyargn) const;
-
-    /// Generate an error message.
-    /// \param yyctx     the context in which the error occurred.
-    virtual std::string yysyntax_error_ (const context& yyctx) const;
     /// Compute post-reduction state.
     /// \param yystate   the current state
     /// \param yysym     the nonterminal to push on the stack
@@ -1710,6 +1709,10 @@ switch (yykind)
     /// are valid, yet not members of the token_kind_type enum.
     static symbol_kind_type yytranslate_ (int t) YY_NOEXCEPT;
 
+#if YYDEBUG || 0
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
+#endif // #if YYDEBUG || 0
 
 
     // Tables.
@@ -1953,15 +1956,6 @@ switch (yykind)
 
     /// The stack.
     stack_type yystack_;
-    /// The stack for LAC.
-    /// Logically, the yy_lac_stack's lifetime is confined to the function
-    /// yy_lac_check_. We just store it as a member of this class to hold
-    /// on to the memory and to avoid frequent reallocations.
-    /// Since yy_lac_check_ is const, this member must be mutable.
-    mutable std::vector<state_type> yylac_stack_;
-    /// Whether an initial LAC context was established.
-    bool yy_lac_established_;
-
 
     /// Push a new state on the stack.
     /// \param m    a debug message to display
@@ -2015,6 +2009,11 @@ switch (yykind)
         value.copy< AST::ExpressionPtr > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_lvalue: // lvalue
+      case symbol_kind::S_lvalue_extension: // lvalue_extension
+        value.copy< AST::VariablePtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_INT: // INT
         value.copy< int > (YY_MOVE (that.value));
         break;
@@ -2057,6 +2056,11 @@ switch (yykind)
     {
       case symbol_kind::S_exp: // exp
         value.move< AST::ExpressionPtr > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_lvalue: // lvalue
+      case symbol_kind::S_lvalue_extension: // lvalue_extension
+        value.move< AST::VariablePtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_INT: // INT
@@ -2134,7 +2138,7 @@ switch (yykind)
 
 
 } // yy
-#line 2138 "tiger.tab.hh"
+#line 2142 "tiger.tab.hh"
 
 
 
