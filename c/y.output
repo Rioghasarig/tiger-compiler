@@ -297,26 +297,6 @@ State 1
     LBRACK    [reduce using rule 70 (lvalue)]
     $default  reduce using rule 70 (lvalue)
 
-    shift/reduce conflict on token LBRACK:
-       70 lvalue: ID •
-       46 array_creation: ID • LBRACK exp RBRACK OF exp
-      First example: ID • LBRACK exp RBRACK OF exp $end
-      Shift derivation
-        $accept
-        ↳ 0: program                                        $end
-             ↳ 1: exp
-                  ↳ 14: array_creation
-                        ↳ 46: ID • LBRACK exp RBRACK OF exp
-      Second example: ID • LBRACK exp RBRACK $end
-      Reduce derivation
-        $accept
-        ↳ 0: program                                      $end
-             ↳ 1: exp
-                  ↳ 3: lvalue
-                       ↳ 72: lvalue     LBRACK exp RBRACK
-                             ↳ 70: ID •
-
-
 
 State 2
 
