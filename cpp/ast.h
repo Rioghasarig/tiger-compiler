@@ -4,429 +4,492 @@
 #include <memory>
 #include <string>
 
-namespace AST {
+namespace AST
+{
 
-class Expression;
-class Variable;
-class IntExpression;
-class StringExpression;
-class CallExpression;
-class Declaration;
-class Type;
-class Symbol;
+  class Expression;
+  class Variable;
+  class FieldVariable;
+  class SubscriptVariable;
+  class IntExpression;
+  class StringExpression;
+  class CallExpression;
+  class Declaration;
+  class Type;
+  class Symbol;
 
-struct efield;
-struct field;
-using ExpressionPtr = std::shared_ptr<Expression>;
-using IntExpressionPtr = std::shared_ptr<IntExpression>;
-using StringExpressionPtr = std::shared_ptr<StringExpression>;
-using CallExpressionPtr = std::shared_ptr<CallExpression>;
+  struct efield;
+  struct field;
+  using ExpressionPtr = std::shared_ptr<Expression>;
+  using IntExpressionPtr = std::shared_ptr<IntExpression>;
+  using StringExpressionPtr = std::shared_ptr<StringExpression>;
+  using CallExpressionPtr = std::shared_ptr<CallExpression>;
 
-using VariablePtr = std::shared_ptr<Variable>;
-using DeclarationPtr = std::shared_ptr<Declaration>;
+  using VariablePtr = std::shared_ptr<Variable>;
+  using FieldVariablePtr = std::shared_ptr<FieldVariable>;
+  using SubscriptVariablePtr = std::shared_ptr<SubscriptVariable>;
 
-using TypePtr = std::shared_ptr<Type>;
-using SymbolPtr = std::shared_ptr<Symbol>;
+  using DeclarationPtr = std::shared_ptr<Declaration>;
 
-// List Aliases
-using DeclarationList = std::list<DeclarationPtr>;
-using ExpressionList = std::list<ExpressionPtr>;
+  using TypePtr = std::shared_ptr<Type>;
+  using SymbolPtr = std::shared_ptr<Symbol>;
 
-using efieldPtr = std::shared_ptr<efield>;
-using efieldList = std::list<efieldPtr>;
-using fieldPtr = std::shared_ptr<field>;
-using fieldList = std::list<fieldPtr>;
+  // List Aliases
+  using DeclarationList = std::list<DeclarationPtr>;
+  using ExpressionList = std::list<ExpressionPtr>;
 
-struct efield {
-  SymbolPtr name;
-  ExpressionPtr exp;
-};
+  using efieldPtr = std::shared_ptr<efield>;
+  using efieldList = std::list<efieldPtr>;
+  using fieldPtr = std::shared_ptr<field>;
+  using fieldList = std::list<fieldPtr>;
 
-struct field {
-  SymbolPtr name;
-  SymbolPtr type;
-  int pos;
-};
-
-class ASTNode {
- private:
-  int id;
-};
-using NodePtr = std::shared_ptr<ASTNode>;
-
-class Symbol {
-  std::string name;
-
- public:
-  Symbol(std::string name) : name(name){};
-
-  static SymbolPtr Gen(std::string name) {
-    return std::make_shared<Symbol>(name);
-  }
-};
-
-// Variables
-class Variable : public ASTNode {
- public:
-  enum var_kind { simpleVar, fieldVar, subscriptVar };
-  Variable(int pos, var_kind kind) : pos(pos), kind(kind) {}
-  virtual void set_var(VariablePtr v) {return;}
- private:
-  int pos;
-  var_kind kind;
-};
-
-class SimpleVariable : public Variable {
- public:
-  SimpleVariable(int pos, SymbolPtr name)
-      : Variable(pos, simpleVar), name(name){};
-
-  static VariablePtr Node(int pos, SymbolPtr name);
- void set_var(VariablePtr v) {return;}
- private:
-  SymbolPtr name;
-};
-
-class FieldVariable : public Variable {
- public:
-  FieldVariable(int pos, VariablePtr var, SymbolPtr field_name)
-      : Variable(pos, fieldVar), var(var), field_name(field_name) {}
-  FieldVariable(int pos, SymbolPtr field_name)
-      : Variable(pos, fieldVar), field_name(field_name) {}
-
-  void set_var(VariablePtr v) { var = v; }
-  static VariablePtr Node(int pos, VariablePtr var, SymbolPtr field_name);
-  static VariablePtr PartialNode(int pos, SymbolPtr field_name);
-
- private:
-  VariablePtr var;
-  SymbolPtr field_name;
-};
-
-class SubscriptVariable : public Variable {
- public:
-  SubscriptVariable(int pos, VariablePtr var, ExpressionPtr exp)
-      : Variable(pos, subscriptVar), var(var), exp(exp) {}
-
-  SubscriptVariable(int pos, ExpressionPtr exp)
-      : Variable(pos, subscriptVar), exp(exp) {}
-
-  void set_var(VariablePtr v) { var = v; }
-  static VariablePtr Node(int pos, VariablePtr var, ExpressionPtr exp);
-  static VariablePtr PartialNode(int pos, ExpressionPtr exp);
-
- private:
-  VariablePtr var;
-  ExpressionPtr exp;
-};
-
-// Expressions
-class Expression : public ASTNode {
- public:
-  enum expression_kind {
-    varExp,
-    nilExp,
-    intExp,
-    stringExp,
-    callExp,
-    opExp,
-    recordExp,
-    seqExp,
-    assignExp,
-    ifExp,
-    whileExp,
-    forExp,
-    breakExp,
-    letExp,
-    arrayExp
+  struct efield
+  {
+    SymbolPtr name;
+    ExpressionPtr exp;
   };
-  Expression(int pos, expression_kind kind) : pos(pos), kind(kind) {}
 
- private:
-  int pos;
-  expression_kind kind;
-};
-
-class VariableExpression : public Expression {
- public:
-  VariableExpression(int pos, VariablePtr var)
-      : Expression(pos, varExp), var(var) {}
-
-  static ExpressionPtr Node(int pos, VariablePtr var);
-
- private:
-  VariablePtr var;
-};
-
-class IntExpression : public Expression {
- public:
-  IntExpression(int pos, int value) : Expression(pos, intExp), value(value) {}
-
-  static ExpressionPtr Node(int pos, int value);
-
- private:
-  int value;
-};
-
-class NilExpression : public Expression {
- public:
-  NilExpression(int pos) : Expression(pos, nilExp) {}
-
-  static ExpressionPtr Node(int pos);
-};
-
-class StringExpression : public Expression {
- public:
-  StringExpression(int pos, std::string string_val)
-      : Expression(pos, stringExp), string_val(string_val) {}
-
-  static ExpressionPtr Node(int pos, std::string string_val);
-
- private:
-  std::string string_val;
-};
-
-class CallExpression : public Expression {
- public:
-  CallExpression(int pos, SymbolPtr func, ExpressionList args)
-      : Expression(pos, callExp), func(func), args(std::move(args)) {}
-
-  static ExpressionPtr Node(int pos, SymbolPtr func, ExpressionList args);
-
- private:
-  SymbolPtr func;
-  ExpressionList args;
-};
-
-class OpExpression : public Expression {
- public:
-  enum oper {
-    A_plusOp,
-    A_minusOp,
-    A_timesOp,
-    A_divideOp,
-    A_eqOp,
-    A_neqOp,
-    A_ltOp,
-    A_leOp,
-    A_gtOp,
-    A_geOp,
-    A_andOp,
-    A_orOp
+  struct field
+  {
+    SymbolPtr name;
+    SymbolPtr type;
+    int pos;
   };
-  OpExpression(int pos, oper op, ExpressionPtr left, ExpressionPtr right)
-      : Expression(pos, opExp), op(op), left(left), right(right) {}
 
-  static ExpressionPtr Node(int pos, oper op, ExpressionPtr left,
-                            ExpressionPtr right);
+  class ASTNode
+  {
+  private:
+    int id;
+  };
+  using NodePtr = std::shared_ptr<ASTNode>;
 
- private:
-  oper op;
-  ExpressionPtr left;
-  ExpressionPtr right;
-};
+  class Symbol
+  {
+    std::string name;
 
-class RecordExpression : public Expression {
- public:
-  RecordExpression(int pos, SymbolPtr type, efieldList fields)
-      : Expression(pos, recordExp), type(type), fields(std::move(fields)) {}
+  public:
+    Symbol(std::string name) : name(name){};
 
-  static ExpressionPtr Node(int pos, SymbolPtr type, efieldList fields);
+    static SymbolPtr Gen(std::string name)
+    {
+      return std::make_shared<Symbol>(name);
+    }
+  };
 
- private:
-  SymbolPtr type;
-  efieldList fields;
-};
+  // Variables
+  class Variable : public ASTNode
+  {
+  public:
+    enum var_kind
+    {
+      simpleVar,
+      fieldVar,
+      subscriptVar
+    };
+    Variable(int pos, var_kind kind) : pos(pos), kind(kind) {}
 
-class ExpressionSequence : public Expression {
- public:
-  ExpressionSequence(int pos, ExpressionList sequence)
-      : Expression(pos, seqExp), sequence(sequence) {}
+  private:
+    int pos;
+    var_kind kind;
+  };
 
-  static ExpressionPtr Node(int pos, ExpressionList sequence);
+  class SimpleVariable : public Variable
+  {
+  public:
+    SimpleVariable(int pos, SymbolPtr name)
+        : Variable(pos, simpleVar), name(name){};
 
- private:
-  ExpressionList sequence;
-};
+    static VariablePtr Node(int pos, SymbolPtr name);
+    void set_var(VariablePtr v) { return; }
 
-class AssignStatement : public Expression {
- public:
-  AssignStatement(int pos, VariablePtr var, ExpressionPtr exp)
-      : Expression(pos, assignExp), var(var), exp(exp) {}
+  private:
+    SymbolPtr name;
+  };
 
-  static ExpressionPtr Node(int pos, VariablePtr, ExpressionPtr exp);
+  class FieldVariable : public Variable
+  {
+  public:
+    FieldVariable(int pos, VariablePtr var, SymbolPtr field_name)
+        : Variable(pos, fieldVar), var(var), field_name(field_name) {}
+    FieldVariable(int pos, SymbolPtr field_name)
+        : Variable(pos, fieldVar), field_name(field_name) {}
 
- private:
-  VariablePtr var;
-  ExpressionPtr exp;
-};
+    void set_var(VariablePtr v) { var = v; }
+    static FieldVariablePtr Node(int pos, VariablePtr var, SymbolPtr field_name);
+    static FieldVariablePtr PartialNode(int pos, SymbolPtr field_name);
 
-class IfStatement : public Expression {
- public:
-  IfStatement(int pos, ExpressionPtr test, ExpressionPtr then,
-              ExpressionPtr elsee)
-      : Expression(pos, ifExp), test(test), then(then), elsee(elsee) {}
+  private:
+    VariablePtr var;
+    SymbolPtr field_name;
+  };
 
-  static ExpressionPtr Node(int pos, ExpressionPtr test, ExpressionPtr then,
-                            ExpressionPtr elsee);
+  class SubscriptVariable : public Variable
+  {
+  public:
+    SubscriptVariable(int pos, VariablePtr var, ExpressionPtr exp)
+        : Variable(pos, subscriptVar), var(var), exp(exp) {}
 
- private:
-  ExpressionPtr test;
-  ExpressionPtr then;
-  ExpressionPtr elsee;
-};
+    SubscriptVariable(int pos, ExpressionPtr exp)
+        : Variable(pos, subscriptVar), exp(exp) {}
 
-class WhileStatement : public Expression {
- public:
-  WhileStatement(int pos, ExpressionPtr test, ExpressionPtr body)
-      : Expression(pos, whileExp), test(test), body(body) {}
+    void set_var(VariablePtr v) { var = v; }
+    static SubscriptVariablePtr Node(int pos, VariablePtr var, ExpressionPtr exp);
+    static SubscriptVariablePtr PartialNode(int pos, ExpressionPtr exp);
 
-  static ExpressionPtr Node(int pos, ExpressionPtr test, ExpressionPtr body);
+  private:
+    VariablePtr var;
+    ExpressionPtr exp;
+  };
 
- private:
-  ExpressionPtr test;
-  ExpressionPtr body;
-};
+  // Expressions
+  class Expression : public ASTNode
+  {
+  public:
+    enum expression_kind
+    {
+      varExp,
+      nilExp,
+      intExp,
+      stringExp,
+      callExp,
+      opExp,
+      recordExp,
+      seqExp,
+      assignExp,
+      ifExp,
+      whileExp,
+      forExp,
+      breakExp,
+      letExp,
+      arrayExp
+    };
+    Expression(int pos, expression_kind kind) : pos(pos), kind(kind) {}
 
-class ForStatement : public Expression {
- public:
-  ForStatement(int pos, SymbolPtr var, ExpressionPtr lo, ExpressionPtr hi,
-               ExpressionPtr body)
-      : Expression(pos, forExp), var(var), lo(lo), hi(hi), body(body) {}
+  private:
+    int pos;
+    expression_kind kind;
+  };
 
-  static ExpressionPtr Node(int pos, SymbolPtr var, ExpressionPtr lo,
-                            ExpressionPtr hi, ExpressionPtr body);
+  class VariableExpression : public Expression
+  {
+  public:
+    VariableExpression(int pos, VariablePtr var)
+        : Expression(pos, varExp), var(var) {}
 
- private:
-  SymbolPtr var;
-  ExpressionPtr lo;
-  ExpressionPtr hi;
-  ExpressionPtr body;
-};
+    static ExpressionPtr Node(int pos, VariablePtr var);
 
-class LetStatement : public Expression {
- public:
-  LetStatement(int pos, DeclarationList decs, ExpressionPtr body)
-      : Expression(pos, letExp), decs(std::move(decs)), body(body) {}
+  private:
+    VariablePtr var;
+  };
 
-  static ExpressionPtr Node(int pos, DeclarationList decs, ExpressionPtr body);
+  class IntExpression : public Expression
+  {
+  public:
+    IntExpression(int pos, int value) : Expression(pos, intExp), value(value) {}
 
- private:
-  DeclarationList decs;
-  ExpressionPtr body;
-};
+    static ExpressionPtr Node(int pos, int value);
 
-class ArrayCreation : public Expression {
- public:
-  ArrayCreation(int pos, SymbolPtr type, ExpressionPtr size, ExpressionPtr init)
-      : Expression(pos, arrayExp), type(type), size(size), init(init) {}
+  private:
+    int value;
+  };
 
-  static ExpressionPtr Node(int pos, SymbolPtr type, ExpressionPtr size,
-                            ExpressionPtr init);
+  class NilExpression : public Expression
+  {
+  public:
+    NilExpression(int pos) : Expression(pos, nilExp) {}
 
- private:
-  SymbolPtr type;
-  ExpressionPtr size;
-  ExpressionPtr init;
-};
+    static ExpressionPtr Node(int pos);
+  };
 
-// Declarations
+  class StringExpression : public Expression
+  {
+  public:
+    StringExpression(int pos, std::string string_val)
+        : Expression(pos, stringExp), string_val(string_val) {}
 
-class Declaration : public ASTNode {
- public:
-  enum dec_kind { functionDec, varDec, typeDec };
-  Declaration(int pos, dec_kind kind) : pos(pos), kind(kind) {}
+    static ExpressionPtr Node(int pos, std::string string_val);
 
- private:
-  int pos;
-  dec_kind kind;
-};
+  private:
+    std::string string_val;
+  };
 
-class FunctionDeclaration : public Declaration {
- public:
-  FunctionDeclaration(int pos, SymbolPtr name, fieldList params)
-      : Declaration(pos, functionDec), name(name), params(std::move(params)) {}
+  class CallExpression : public Expression
+  {
+  public:
+    CallExpression(int pos, SymbolPtr func, ExpressionList args)
+        : Expression(pos, callExp), func(func), args(std::move(args)) {}
 
-  static DeclarationPtr Node(int pos, SymbolPtr name, fieldList params);
+    static ExpressionPtr Node(int pos, SymbolPtr func, ExpressionList args);
 
- private:
-  SymbolPtr name;
-  fieldList params;
-};
+  private:
+    SymbolPtr func;
+    ExpressionList args;
+  };
 
-class VariableDeclaration : public Declaration {
- public:
-  VariableDeclaration(int pos, SymbolPtr var_name, SymbolPtr type_name,
-                      ExpressionPtr init)
-      : Declaration(pos, varDec),
-        var_name(var_name),
-        type_name(type_name),
-        init(init) {}
+  class OpExpression : public Expression
+  {
+  public:
+    enum oper
+    {
+      A_plusOp,
+      A_minusOp,
+      A_timesOp,
+      A_divideOp,
+      A_eqOp,
+      A_neqOp,
+      A_ltOp,
+      A_leOp,
+      A_gtOp,
+      A_geOp,
+      A_andOp,
+      A_orOp
+    };
+    OpExpression(int pos, oper op, ExpressionPtr left, ExpressionPtr right)
+        : Expression(pos, opExp), op(op), left(left), right(right) {}
 
-  static DeclarationPtr Node(int pos, SymbolPtr var_name, SymbolPtr type_name,
-                             ExpressionPtr init);
+    static ExpressionPtr Node(int pos, oper op, ExpressionPtr left,
+                              ExpressionPtr right);
 
- private:
-  SymbolPtr var_name;
-  SymbolPtr type_name;
-  ExpressionPtr init;
-};
+  private:
+    oper op;
+    ExpressionPtr left;
+    ExpressionPtr right;
+  };
 
-class TypeDeclaration : public Declaration {
- public:
-  TypeDeclaration(int pos, SymbolPtr type_name, TypePtr type)
-      : Declaration(pos, typeDec), type_name(type_name), type(type) {}
+  class RecordExpression : public Expression
+  {
+  public:
+    RecordExpression(int pos, SymbolPtr type, efieldList fields)
+        : Expression(pos, recordExp), type(type), fields(std::move(fields)) {}
 
-  static DeclarationPtr Node(int pos, SymbolPtr type_name, TypePtr type);
+    static ExpressionPtr Node(int pos, SymbolPtr type, efieldList fields);
 
- private:
-  SymbolPtr type_name;
-  TypePtr type;
-};
+  private:
+    SymbolPtr type;
+    efieldList fields;
+  };
 
-// Types
-class Type {
- public:
-  enum type_kind { symbol_ref, record, array_ref };
+  class ExpressionSequence : public Expression
+  {
+  public:
+    ExpressionSequence(int pos, ExpressionList sequence)
+        : Expression(pos, seqExp), sequence(sequence) {}
 
-  Type(int pos, type_kind kind) : pos(pos), kind(kind) {}
+    static ExpressionPtr Node(int pos, ExpressionList sequence);
 
- private:
-  int pos;
-  type_kind kind;
-};
+  private:
+    ExpressionList sequence;
+  };
 
-class SymbolReference : public Type {
- public:
-  SymbolReference(int pos, SymbolPtr type_name)
-      : Type(pos, symbol_ref), type_name(type_name) {}
+  class AssignStatement : public Expression
+  {
+  public:
+    AssignStatement(int pos, VariablePtr var, ExpressionPtr exp)
+        : Expression(pos, assignExp), var(var), exp(exp) {}
 
-  static TypePtr Node(int pos, SymbolPtr type_name);
+    static ExpressionPtr Node(int pos, VariablePtr, ExpressionPtr exp);
 
- private:
-  SymbolPtr type_name;
-};
+  private:
+    VariablePtr var;
+    ExpressionPtr exp;
+  };
 
-class Record : public Type {
- public:
-  Record(int pos, fieldList fields)
-      : Type(pos, record), fields(std::move(fields)) {}
-  static TypePtr Node(int pos, fieldList fields);
+  class IfStatement : public Expression
+  {
+  public:
+    IfStatement(int pos, ExpressionPtr test, ExpressionPtr then,
+                ExpressionPtr elsee)
+        : Expression(pos, ifExp), test(test), then(then), elsee(elsee) {}
 
- private:
-  fieldList fields;
-};
+    static ExpressionPtr Node(int pos, ExpressionPtr test, ExpressionPtr then,
+                              ExpressionPtr elsee);
 
-class ArrayReference : public Type {
- public:
-  ArrayReference(int pos, SymbolPtr array_name)
-      : Type(pos, array_ref), array_name(array_name) {}
+  private:
+    ExpressionPtr test;
+    ExpressionPtr then;
+    ExpressionPtr elsee;
+  };
 
-  static TypePtr Node(int pos, SymbolPtr array_name);
+  class WhileStatement : public Expression
+  {
+  public:
+    WhileStatement(int pos, ExpressionPtr test, ExpressionPtr body)
+        : Expression(pos, whileExp), test(test), body(body) {}
 
- private:
-  SymbolPtr array_name;
-};
+    static ExpressionPtr Node(int pos, ExpressionPtr test, ExpressionPtr body);
 
-}  // namespace AST
+  private:
+    ExpressionPtr test;
+    ExpressionPtr body;
+  };
+
+  class ForStatement : public Expression
+  {
+  public:
+    ForStatement(int pos, SymbolPtr var, ExpressionPtr lo, ExpressionPtr hi,
+                 ExpressionPtr body)
+        : Expression(pos, forExp), var(var), lo(lo), hi(hi), body(body) {}
+
+    static ExpressionPtr Node(int pos, SymbolPtr var, ExpressionPtr lo,
+                              ExpressionPtr hi, ExpressionPtr body);
+
+  private:
+    SymbolPtr var;
+    ExpressionPtr lo;
+    ExpressionPtr hi;
+    ExpressionPtr body;
+  };
+
+  class BreakStatement : public Expression
+  {
+    BreakStatement(int pos) 
+      : Expression(pos, breakExp) {}
+  
+  };
+
+  class LetStatement : public Expression
+  {
+  public:
+    LetStatement(int pos, DeclarationList decs, ExpressionPtr body)
+        : Expression(pos, letExp), decs(std::move(decs)), body(body) {}
+
+    static ExpressionPtr Node(int pos, DeclarationList decs, ExpressionPtr body);
+
+  private:
+    DeclarationList decs;
+    ExpressionPtr body;
+  };
+
+  class ArrayCreation : public Expression
+  {
+  public:
+    ArrayCreation(int pos, SymbolPtr type, ExpressionPtr size, ExpressionPtr init)
+        : Expression(pos, arrayExp), type(type), size(size), init(init) {}
+
+    static ExpressionPtr Node(int pos, SymbolPtr type, ExpressionPtr size,
+                              ExpressionPtr init);
+
+  private:
+    SymbolPtr type;
+    ExpressionPtr size;
+    ExpressionPtr init;
+  };
+
+  // Declarations
+
+  class Declaration : public ASTNode
+  {
+  public:
+    enum dec_kind
+    {
+      functionDec,
+      varDec,
+      typeDec
+    };
+    Declaration(int pos, dec_kind kind) : pos(pos), kind(kind) {}
+
+  private:
+    int pos;
+    dec_kind kind;
+  };
+
+  class FunctionDeclaration : public Declaration
+  {
+  public:
+    FunctionDeclaration(int pos, SymbolPtr name, fieldList params)
+        : Declaration(pos, functionDec), name(name), params(std::move(params)) {}
+
+    static DeclarationPtr Node(int pos, SymbolPtr name, fieldList params);
+
+  private:
+    SymbolPtr name;
+    fieldList params;
+  };
+
+  class VariableDeclaration : public Declaration
+  {
+  public:
+    VariableDeclaration(int pos, SymbolPtr var_name, SymbolPtr type_name,
+                        ExpressionPtr init)
+        : Declaration(pos, varDec),
+          var_name(var_name),
+          type_name(type_name),
+          init(init) {}
+
+    static DeclarationPtr Node(int pos, SymbolPtr var_name, SymbolPtr type_name,
+                               ExpressionPtr init);
+
+  private:
+    SymbolPtr var_name;
+    SymbolPtr type_name;
+    ExpressionPtr init;
+  };
+
+  class TypeDeclaration : public Declaration
+  {
+  public:
+    TypeDeclaration(int pos, SymbolPtr type_name, TypePtr type)
+        : Declaration(pos, typeDec), type_name(type_name), type(type) {}
+
+    static DeclarationPtr Node(int pos, SymbolPtr type_name, TypePtr type);
+
+  private:
+    SymbolPtr type_name;
+    TypePtr type;
+  };
+
+  // Types
+  class Type
+  {
+  public:
+    enum type_kind
+    {
+      symbol_ref,
+      record,
+      array_ref
+    };
+
+    Type(int pos, type_kind kind) : pos(pos), kind(kind) {}
+
+  private:
+    int pos;
+    type_kind kind;
+  };
+
+  class SymbolReference : public Type
+  {
+  public:
+    SymbolReference(int pos, SymbolPtr type_name)
+        : Type(pos, symbol_ref), type_name(type_name) {}
+
+    static TypePtr Node(int pos, SymbolPtr type_name);
+
+  private:
+    SymbolPtr type_name;
+  };
+
+  class Record : public Type
+  {
+  public:
+    Record(int pos, fieldList fields)
+        : Type(pos, record), fields(std::move(fields)) {}
+    static TypePtr Node(int pos, fieldList fields);
+
+  private:
+    fieldList fields;
+  };
+
+  class ArrayReference : public Type
+  {
+  public:
+    ArrayReference(int pos, SymbolPtr array_name)
+        : Type(pos, array_ref), array_name(array_name) {}
+
+    static TypePtr Node(int pos, SymbolPtr array_name);
+
+  private:
+    SymbolPtr array_name;
+  };
+
+} // namespace AST
 #endif

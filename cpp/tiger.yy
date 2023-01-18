@@ -9,7 +9,7 @@ AST::ExpressionPtr absyn_root;
 
 
 %skeleton "lalr1.cc" // -*- C++ -*-
-%require "3.8.2"
+%require "3.8"
 %header
 
 %define api.token.raw
@@ -39,7 +39,9 @@ AST::ExpressionPtr absyn_root;
 %token <int> INT;
 
 %nterm <AST::ExpressionPtr> exp;
-%nterm <AST::VariablePtr> lvalue lvalue_extension; 
+%nterm <AST::VariablePtr> lvalue; 
+%nterm <AST::FieldVariablePtr> field_extension;
+%nterm <AST::SubscriptVariablePtr> subscript_extension;
 
 %token 
   COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK 
@@ -71,10 +73,10 @@ AST::ExpressionPtr absyn_root;
 
 program: exp {absyn_root = $1;}
 
-exp: INT {$$ = AST::IntExpression::Node(0, $1);}
+exp: INT {$$ = AST::IntExpression::Node(drv.location.begin.line, $1);}
 exp: lvalue 
-exp: NIL 
-exp: STRING 
+exp: NIL {$$ = AST::NilExpression::Node(drv.location.begin.line);}
+exp: STRING {$$ = AST::StringExpression::Node(drv.location.begin.line, $1);}
 exp: BREAK 
 exp: LPAREN expression_sequence RPAREN 
 exp: function_call 
@@ -171,11 +173,17 @@ variable_declaration: VAR ID COLON ID ASSIGN exp
 function_declaration: FUNCTION ID LPAREN type_fields RPAREN EQ exp
 function_declaration: FUNCTION ID LPAREN type_fields RPAREN COLON ID EQ exp
 
-lvalue: ID lvalue_extension {$$ = AST::SimpleVariable::Node(0, AST::Symbol::Gen($1));}
+lvalue: ID {$$ = AST::SimpleVariable::Node(0, AST::Symbol::Gen($1));}
+lvalue: ID field_extension {$$ = AST::SimpleVariable::Node(0, AST::Symbol::Gen($1)); $2->set_var($$);}
+lvalue: ID subscript_extension {$$ = AST::SimpleVariable::Node(0, AST::Symbol::Gen($1)); $2->set_var($$);}
 
-lvalue_extension: /* empty */  {$$ = NULL;}
-lvalue_extension: DOT ID lvalue_extension {$$ = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen($2)); if($3 != NULL) $3->set_var($$);}
-lvalue_extension: LBRACK exp RBRACK lvalue_extension {$$ = AST::SubscriptVariable::PartialNode(0, $2);if($4 != NULL) $4->set_var($$);}
+field_extension: DOT ID  {$$ = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen($2)); }
+field_extension: DOT ID field_extension {$$ = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen($2)); $3->set_var($$);}
+field_extension: DOT ID subscript_extension {$$ = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen($2)); $3->set_var($$);}
+
+subscript_extension: LBRACK exp RBRACK  {$$ = AST::SubscriptVariable::PartialNode(0, $2);}
+subscript_extension: LBRACK exp RBRACK field_extension {$$ = AST::SubscriptVariable::PartialNode(0,$2); $4->set_var($$);}
+subscript_extension: LBRACK exp RBRACK subscript_extension {$$ = AST::SubscriptVariable::PartialNode(0,$2); $4->set_var($$);}
 %%
 
 void

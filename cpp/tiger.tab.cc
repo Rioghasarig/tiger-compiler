@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.8.2.
+// A Bison parser, made by GNU Bison 3.8.
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
@@ -168,9 +168,9 @@ namespace yy {
   parser::syntax_error::~syntax_error () YY_NOEXCEPT YY_NOTHROW
   {}
 
-  /*---------.
-  | symbol.  |
-  `---------*/
+  /*---------------.
+  | symbol kinds.  |
+  `---------------*/
 
 
 
@@ -221,8 +221,15 @@ namespace yy {
         value.YY_MOVE_OR_COPY< AST::ExpressionPtr > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_field_extension: // field_extension
+        value.YY_MOVE_OR_COPY< AST::FieldVariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_subscript_extension: // subscript_extension
+        value.YY_MOVE_OR_COPY< AST::SubscriptVariablePtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
-      case symbol_kind::S_lvalue_extension: // lvalue_extension
         value.YY_MOVE_OR_COPY< AST::VariablePtr > (YY_MOVE (that.value));
         break;
 
@@ -254,8 +261,15 @@ namespace yy {
         value.move< AST::ExpressionPtr > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_field_extension: // field_extension
+        value.move< AST::FieldVariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_subscript_extension: // subscript_extension
+        value.move< AST::SubscriptVariablePtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
-      case symbol_kind::S_lvalue_extension: // lvalue_extension
         value.move< AST::VariablePtr > (YY_MOVE (that.value));
         break;
 
@@ -287,8 +301,15 @@ namespace yy {
         value.copy< AST::ExpressionPtr > (that.value);
         break;
 
+      case symbol_kind::S_field_extension: // field_extension
+        value.copy< AST::FieldVariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_subscript_extension: // subscript_extension
+        value.copy< AST::SubscriptVariablePtr > (that.value);
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
-      case symbol_kind::S_lvalue_extension: // lvalue_extension
         value.copy< AST::VariablePtr > (that.value);
         break;
 
@@ -319,8 +340,15 @@ namespace yy {
         value.move< AST::ExpressionPtr > (that.value);
         break;
 
+      case symbol_kind::S_field_extension: // field_extension
+        value.move< AST::FieldVariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_subscript_extension: // subscript_extension
+        value.move< AST::SubscriptVariablePtr > (that.value);
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
-      case symbol_kind::S_lvalue_extension: // lvalue_extension
         value.move< AST::VariablePtr > (that.value);
         break;
 
@@ -393,7 +421,7 @@ namespace yy {
   }
 
   void
-  parser::yypop_ (int n) YY_NOEXCEPT
+  parser::yypop_ (int n)
   {
     yystack_.pop (n);
   }
@@ -436,13 +464,13 @@ namespace yy {
   }
 
   bool
-  parser::yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT
+  parser::yy_pact_value_is_default_ (int yyvalue)
   {
     return yyvalue == yypact_ninf_;
   }
 
   bool
-  parser::yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT
+  parser::yy_table_value_is_error_ (int yyvalue)
   {
     return yyvalue == yytable_ninf_;
   }
@@ -596,8 +624,15 @@ namespace yy {
         yylhs.value.emplace< AST::ExpressionPtr > ();
         break;
 
+      case symbol_kind::S_field_extension: // field_extension
+        yylhs.value.emplace< AST::FieldVariablePtr > ();
+        break;
+
+      case symbol_kind::S_subscript_extension: // subscript_extension
+        yylhs.value.emplace< AST::SubscriptVariablePtr > ();
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
-      case symbol_kind::S_lvalue_extension: // lvalue_extension
         yylhs.value.emplace< AST::VariablePtr > ();
         break;
 
@@ -631,43 +666,73 @@ namespace yy {
           switch (yyn)
             {
   case 2: // program: exp
-#line 72 "tiger.yy"
+#line 74 "tiger.yy"
              {absyn_root = yystack_[0].value.as < AST::ExpressionPtr > ();}
-#line 637 "tiger.tab.cc"
+#line 672 "tiger.tab.cc"
     break;
 
   case 3: // exp: INT
-#line 74 "tiger.yy"
-         {yylhs.value.as < AST::ExpressionPtr > () = AST::IntExpression::Node(0, yystack_[0].value.as < int > ());}
-#line 643 "tiger.tab.cc"
+#line 76 "tiger.yy"
+         {yylhs.value.as < AST::ExpressionPtr > () = AST::IntExpression::Node(drv.location.begin.line, yystack_[0].value.as < int > ());}
+#line 678 "tiger.tab.cc"
     break;
 
-  case 71: // lvalue: ID lvalue_extension
-#line 174 "tiger.yy"
-                            {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ()));}
-#line 649 "tiger.tab.cc"
-    break;
-
-  case 72: // lvalue_extension: %empty
+  case 71: // lvalue: ID
 #line 176 "tiger.yy"
-                               {yylhs.value.as < AST::VariablePtr > () = NULL;}
-#line 655 "tiger.tab.cc"
+           {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[0].value.as < std::string > ()));}
+#line 684 "tiger.tab.cc"
     break;
 
-  case 73: // lvalue_extension: DOT ID lvalue_extension
+  case 72: // lvalue: ID field_extension
 #line 177 "tiger.yy"
-                                          {yylhs.value.as < AST::VariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); if(yystack_[0].value.as < AST::VariablePtr > () != NULL) yystack_[0].value.as < AST::VariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
-#line 661 "tiger.tab.cc"
+                           {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
+#line 690 "tiger.tab.cc"
     break;
 
-  case 74: // lvalue_extension: LBRACK exp RBRACK lvalue_extension
+  case 73: // lvalue: ID subscript_extension
 #line 178 "tiger.yy"
-                                                     {yylhs.value.as < AST::VariablePtr > () = AST::SubscriptVariable::PartialNode(0, yystack_[2].value.as < AST::ExpressionPtr > ());if(yystack_[0].value.as < AST::VariablePtr > () != NULL) yystack_[0].value.as < AST::VariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
-#line 667 "tiger.tab.cc"
+                               {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
+#line 696 "tiger.tab.cc"
+    break;
+
+  case 74: // field_extension: DOT ID
+#line 180 "tiger.yy"
+                         {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[0].value.as < std::string > ())); }
+#line 702 "tiger.tab.cc"
+    break;
+
+  case 75: // field_extension: DOT ID field_extension
+#line 181 "tiger.yy"
+                                        {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::FieldVariablePtr > ());}
+#line 708 "tiger.tab.cc"
+    break;
+
+  case 76: // field_extension: DOT ID subscript_extension
+#line 182 "tiger.yy"
+                                            {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::FieldVariablePtr > ());}
+#line 714 "tiger.tab.cc"
+    break;
+
+  case 77: // subscript_extension: LBRACK exp RBRACK
+#line 184 "tiger.yy"
+                                        {yylhs.value.as < AST::SubscriptVariablePtr > () = AST::SubscriptVariable::PartialNode(0, yystack_[1].value.as < AST::ExpressionPtr > ());}
+#line 720 "tiger.tab.cc"
+    break;
+
+  case 78: // subscript_extension: LBRACK exp RBRACK field_extension
+#line 185 "tiger.yy"
+                                                       {yylhs.value.as < AST::SubscriptVariablePtr > () = AST::SubscriptVariable::PartialNode(0,yystack_[2].value.as < AST::ExpressionPtr > ()); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::SubscriptVariablePtr > ());}
+#line 726 "tiger.tab.cc"
+    break;
+
+  case 79: // subscript_extension: LBRACK exp RBRACK subscript_extension
+#line 186 "tiger.yy"
+                                                           {yylhs.value.as < AST::SubscriptVariablePtr > () = AST::SubscriptVariable::PartialNode(0,yystack_[2].value.as < AST::ExpressionPtr > ()); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::SubscriptVariablePtr > ());}
+#line 732 "tiger.tab.cc"
     break;
 
 
-#line 671 "tiger.tab.cc"
+#line 736 "tiger.tab.cc"
 
             default:
               break;
@@ -860,146 +925,148 @@ namespace yy {
 
 
 
-  const signed char parser::yypact_ninf_ = -44;
+  const signed char parser::yypact_ninf_ = -40;
 
   const signed char parser::yytable_ninf_ = -1;
 
   const short
   parser::yypact_[] =
   {
-      69,     1,   -44,   -44,    69,    69,    69,    69,     8,   -14,
-     -44,   -44,    13,   284,   -44,   -44,   -44,   -44,   -44,   -44,
-     -44,   -44,   -44,   -44,   -44,   -44,    -3,    69,    69,    18,
-      23,   -44,   191,    22,   -44,   240,   149,    32,    31,    43,
-      58,   -15,   -14,   -44,   -44,   -44,   -44,    69,    69,    69,
-      69,    69,    69,    69,    69,    69,    69,    69,    69,    69,
-      99,    52,   256,    44,    49,     9,    69,   -44,   -44,    69,
-      69,    69,    56,    -6,    48,    69,   -44,    -1,    -1,   -44,
-     -44,    20,    20,    20,    20,    20,    20,   296,   308,   284,
-      69,   -44,   -44,    -7,    69,   -44,    69,   -44,   191,   223,
-     284,   203,    72,    73,    69,     6,    38,    99,    69,   -44,
-     137,   272,   -44,    69,    69,    74,    70,    51,   284,   -44,
-      72,    42,   -44,   -44,   -44,    20,    80,   -44,     9,   284,
-     170,    81,    -5,    69,    71,    84,    68,    69,    83,    88,
-      69,   284,   -44,   -44,    69,   284,    89,   -44,    75,   284,
-     137,    86,    69,   -44,    94,   284,    83,   -44
+       5,    21,   -40,   -40,     5,     5,     5,     5,    -2,    42,
+     -40,   -40,    20,   275,   -40,   -40,   -40,   -40,   -40,   -40,
+     -40,   -40,   -40,   -40,   -40,   -40,    -4,     5,     5,    22,
+      26,   -40,   -40,   182,    23,   -40,   231,   140,    12,    28,
+      40,    41,     7,    42,   -40,   -40,   -40,   -40,     5,     5,
+       5,     5,     5,     5,     5,     5,     5,     5,     5,     5,
+       5,    57,    51,   247,    44,    48,     4,     5,   -40,   -40,
+       5,     5,     5,    56,    -5,    46,     5,   -40,    -1,    -1,
+     -40,   -40,   299,   299,   299,   299,   299,   299,   287,   309,
+     275,     5,   -40,   -40,     1,     5,   -40,     5,   -40,   -40,
+     182,   214,   275,   194,    85,    86,     5,     8,    53,    57,
+       5,   -40,   -40,   102,   263,   -40,     5,     5,    83,    84,
+      65,   275,   -40,    85,    58,   -40,   -40,   -40,   299,    93,
+     -40,     4,   275,   161,    96,     6,     5,    87,    97,    82,
+       5,    98,   100,     5,   275,   -40,   -40,     5,   275,   104,
+     -40,    89,   275,   102,   105,     5,   -40,   108,   275,    98,
+     -40
   };
 
   const signed char
   parser::yydefact_[] =
   {
-       0,    72,     6,     3,    21,     0,     0,     0,     0,    54,
+       0,    71,     6,     3,    21,     0,     0,     0,     0,    54,
        7,     5,     0,     2,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,     4,    26,     0,     0,
-       0,    71,    23,     0,    34,     0,     0,     0,     0,     0,
-       0,     0,    54,    56,    57,    58,     1,     0,     0,     0,
+       0,    72,    73,    23,     0,    34,     0,     0,     0,     0,
+       0,     0,     0,    54,    56,    57,    58,     1,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-      28,     0,     0,     0,     0,    72,     0,    22,     8,     0,
-       0,     0,     0,     0,     0,    21,    55,    30,    31,    32,
-      33,    35,    36,    39,    40,    37,    38,    41,    42,    48,
-       0,    27,    25,    72,     0,    43,     0,    73,    23,    50,
-      51,     0,    63,     0,     0,     0,     0,    28,     0,    74,
-      45,     0,    24,     0,     0,     0,     0,     0,    67,    60,
-      63,     0,    59,    53,    29,    47,     0,    44,    72,    49,
-       0,     0,     0,     0,     0,     0,     0,     0,    65,     0,
-       0,    68,    61,    62,     0,    52,     0,    64,     0,    69,
-      45,     0,     0,    46,     0,    70,    65,    66
+       0,    28,     0,     0,     0,     0,    74,     0,    22,     8,
+       0,     0,     0,     0,     0,     0,    21,    55,    30,    31,
+      32,    33,    35,    36,    39,    40,    37,    38,    41,    42,
+      48,     0,    27,    25,    77,     0,    43,     0,    75,    76,
+      23,    50,    51,     0,    63,     0,     0,     0,     0,    28,
+       0,    78,    79,    45,     0,    24,     0,     0,     0,     0,
+       0,    67,    60,    63,     0,    59,    53,    29,    47,     0,
+      44,    77,    49,     0,     0,     0,     0,     0,     0,     0,
+       0,    65,     0,     0,    68,    61,    62,     0,    52,     0,
+      64,     0,    69,    45,     0,     0,    46,     0,    70,    65,
+      66
   };
 
   const signed char
   parser::yypgoto_[] =
   {
-     -44,   -44,     0,    25,     3,   -44,   -44,    -9,   -44,   -44,
-     -44,   -44,   -44,   -44,   -43,   -44,   -44,   -44,   -44,   -44,
-     -44,    67,   -44,   -44,   -44,    -8,   -29,   -44,   -44,   -44,
-       2
+     -40,   -40,     0,    29,    13,   -40,   -40,    24,   -40,   -40,
+     -40,   -40,   -40,   -40,   -39,   -40,   -40,   -40,   -40,   -40,
+     -40,    72,   -40,   -40,   -40,     9,   -29,   -40,   -40,   -40,
+       2,     3
   };
 
   const unsigned char
   parser::yydefgoto_[] =
   {
-       0,    12,    32,    33,    67,    14,    61,    91,    15,    16,
-      17,    18,    19,    64,   127,    20,    21,    22,    23,    24,
-      25,    41,    42,    43,   122,   116,   147,    44,    45,    26,
-     109
+       0,    12,    33,    34,    68,    14,    62,    92,    15,    16,
+      17,    18,    19,    65,   130,    20,    21,    22,    23,    24,
+      25,    42,    43,    44,   125,   119,   150,    45,    46,    26,
+     111,   112
   };
 
   const short
   parser::yytable_[] =
   {
-      13,   103,   139,    31,    96,    34,    35,    36,    30,   119,
-      27,    37,    28,    46,    29,   140,    30,    49,    50,   120,
-      96,    63,   104,    75,    30,    59,    65,    60,    62,    38,
-      39,    40,    68,   108,    72,   121,    47,    48,    49,    50,
-      -1,    -1,    -1,    -1,    -1,    -1,    73,    77,    78,    79,
+      13,    38,   105,    31,    32,    35,    36,    37,     1,     2,
+       3,   122,    97,   142,     4,    97,    30,    50,    51,    30,
+      47,   123,     5,   106,    60,    64,   143,    61,    63,    66,
+      27,    73,    28,    69,    29,     6,    30,   124,     7,     8,
+      72,   110,     9,    74,    75,    76,    10,    11,    78,    79,
       80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      71,    74,    92,    95,    94,   102,    98,    97,   105,    99,
-     100,   101,     1,     2,     3,   115,   117,   123,     4,   133,
-     132,   131,   135,   136,   138,   142,     5,   143,   144,   146,
-     107,   148,   151,   154,   110,   152,   111,   156,   124,     6,
-     106,   112,     7,     8,   118,    90,     9,   153,   125,    76,
-      10,    11,   134,   129,   130,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,   157,     0,     0,
-       0,     0,     0,   141,     0,     0,     0,   145,     0,     0,
-     149,     0,     0,   126,   150,     0,     0,     0,     0,     0,
-       0,     0,   155,    47,    48,    49,    50,    51,    52,    53,
-      54,    55,    56,    57,    58,    47,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,     0,     0,     0,
-       0,     0,     0,     0,     0,    70,    47,    48,    49,    50,
-      51,    52,    53,    54,    55,    56,    57,    58,     0,    66,
-       0,     0,     0,     0,     0,     0,   137,    47,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    47,
+      90,    93,    96,    91,    95,   104,   107,   100,    98,    99,
+     101,   102,   103,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,    39,    40,    41,   118,   120,
+     134,   109,   126,   136,   135,   113,   139,   114,   138,   141,
+     146,   145,   147,   151,   149,   108,   121,   154,   129,   155,
+     128,   159,   157,   115,   156,    77,   132,   133,    48,    49,
+      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
+     160,     0,   137,   127,     0,     0,   144,     0,     0,     0,
+     148,     0,     0,   152,     0,     0,     0,   153,     0,     0,
+       0,     0,     0,     0,     0,   158,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,    59,     0,     0,
+       0,     0,     0,     0,     0,     0,    71,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,     0,
+      67,     0,     0,     0,     0,     0,     0,   140,    48,    49,
+      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
       48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,     0,     0,     0,     0,     0,     0,     0,   114,    47,
+      58,    59,     0,     0,     0,     0,     0,     0,     0,   117,
       48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,     0,     0,     0,     0,   113,    47,    48,    49,    50,
-      51,    52,    53,    54,    55,    56,    57,    58,    93,     0,
-       0,    69,    47,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,    57,    58,   128,     0,     0,     0,    47,    48,
+      58,    59,     0,     0,     0,     0,   116,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    94,
+       0,     0,    70,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,   131,     0,     0,     0,    48,
       49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
-      57,    58,    47,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,     0,    58,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    56
+      59,    48,    49,    50,    51,    52,    53,    54,    55,    56,
+      57,    58,    59,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,     0,    59,    48,    49,    50,    51,    -1,
+      -1,    -1,    -1,    -1,    -1,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57
   };
 
   const short
   parser::yycheck_[] =
   {
-       0,     7,     7,     1,    11,     5,     6,     7,    15,     3,
-       9,     3,    11,     0,    13,    20,    15,    18,    19,    13,
-      11,     3,    28,    38,    15,    28,     3,    27,    28,    43,
-      44,    45,    10,    40,     3,    29,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,     3,    47,    48,    49,
+       0,     3,     7,     1,     1,     5,     6,     7,     3,     4,
+       5,     3,    11,     7,     9,    11,    15,    18,    19,    15,
+       0,    13,    17,    28,    28,     3,    20,    27,    28,     3,
+       9,     3,    11,    10,    13,    30,    15,    29,    33,    34,
+      28,    40,    37,     3,     3,    38,    41,    42,    48,    49,
       50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      28,     3,    10,    14,    20,     9,    66,    65,    20,    69,
-      70,    71,     3,     4,     5,     3,     3,    39,     9,    28,
-      10,     7,    40,     3,     3,    14,    17,     3,    20,     6,
-      90,     3,     3,     7,    94,    20,    96,     3,   107,    30,
-      75,    98,    33,    34,   104,     6,    37,   150,   108,    42,
-      41,    42,   120,   113,   114,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25,    26,    27,   156,    -1,    -1,
-      -1,    -1,    -1,   133,    -1,    -1,    -1,   137,    -1,    -1,
-     140,    -1,    -1,     6,   144,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,   152,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25,    26,    27,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    36,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    -1,     8,
+      60,    10,    14,     6,    20,     9,    20,    67,    66,    66,
+      70,    71,    72,    16,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,    26,    27,    43,    44,    45,     3,     3,
+       7,    91,    39,    28,    10,    95,     3,    97,    40,     3,
+       3,    14,    20,     3,     6,    76,   106,     3,     6,    20,
+     110,     3,     7,   100,   153,    43,   116,   117,    16,    17,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+     159,    -1,   123,   109,    -1,    -1,   136,    -1,    -1,    -1,
+     140,    -1,    -1,   143,    -1,    -1,    -1,   147,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,   155,    16,    17,    18,    19,
+      20,    21,    22,    23,    24,    25,    26,    27,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    36,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    35,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    -1,    -1,    -1,    -1,    32,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    12,    -1,
-      -1,    31,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    12,    -1,    -1,    -1,    16,    17,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    -1,
+       8,    -1,    -1,    -1,    -1,    -1,    -1,    36,    16,    17,
       18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
       16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    -1,    27,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25
+      26,    27,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    35,
+      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
+      26,    27,    -1,    -1,    -1,    -1,    32,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    12,
+      -1,    -1,    31,    16,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,    26,    27,    12,    -1,    -1,    -1,    16,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+      27,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    16,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,    -1,    27,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25
   };
 
   const signed char
@@ -1008,19 +1075,20 @@ namespace yy {
        0,     3,     4,     5,     9,    17,    30,    33,    34,    37,
       41,    42,    48,    49,    52,    55,    56,    57,    58,    59,
       62,    63,    64,    65,    66,    67,    76,     9,    11,    13,
-      15,    77,    49,    50,    49,    49,    49,     3,    43,    44,
-      45,    68,    69,    70,    74,    75,     0,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
-      49,    53,    49,     3,    60,     3,     8,    51,    10,    31,
-      36,    28,     3,     3,     3,    38,    68,    49,    49,    49,
+      15,    77,    78,    49,    50,    49,    49,    49,     3,    43,
+      44,    45,    68,    69,    70,    74,    75,     0,    16,    17,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+      28,    49,    53,    49,     3,    60,     3,     8,    51,    10,
+      31,    36,    28,     3,     3,     3,    38,    68,    49,    49,
       49,    49,    49,    49,    49,    49,    49,    49,    49,    49,
-       6,    54,    10,    12,    20,    14,    11,    77,    49,    49,
-      49,    49,     9,     7,    28,    20,    50,    49,    40,    77,
-      49,    49,    51,    32,    35,     3,    72,     3,    49,     3,
-      13,    29,    71,    39,    54,    49,     6,    61,    12,    49,
-      49,     7,    10,    28,    72,    40,     3,    36,     3,     7,
-      20,    49,    14,     3,    20,    49,     6,    73,     3,    49,
-      49,     3,    20,    61,     7,    49,     3,    73
+      49,     6,    54,    10,    12,    20,    14,    11,    77,    78,
+      49,    49,    49,    49,     9,     7,    28,    20,    50,    49,
+      40,    77,    78,    49,    49,    51,    32,    35,     3,    72,
+       3,    49,     3,    13,    29,    71,    39,    54,    49,     6,
+      61,    12,    49,    49,     7,    10,    28,    72,    40,     3,
+      36,     3,     7,    20,    49,    14,     3,    20,    49,     6,
+      73,     3,    49,    49,     3,    20,    61,     7,    49,     3,
+      73
   };
 
   const signed char
@@ -1033,7 +1101,7 @@ namespace yy {
       57,    58,    58,    59,    60,    61,    61,    62,    63,    64,
       64,    65,    66,    67,    68,    68,    69,    69,    69,    70,
       71,    71,    71,    72,    72,    73,    73,    74,    74,    75,
-      75,    76,    77,    77,    77
+      75,    76,    76,    76,    77,    77,    77,    78,    78,    78
   };
 
   const signed char
@@ -1046,7 +1114,7 @@ namespace yy {
        3,     3,     3,     4,     4,     0,     5,     6,     3,     6,
        4,     4,     8,     5,     0,     2,     1,     1,     1,     4,
        1,     3,     3,     0,     4,     0,     5,     4,     6,     7,
-       9,     2,     0,     3,     4
+       9,     1,     2,     2,     2,     3,     3,     3,     4,     4
   };
 
 
@@ -1069,7 +1137,8 @@ namespace yy {
   "if_statement", "while_loop", "for_loop", "let_statement",
   "declaration_sequence", "declaration", "type_declaration", "type",
   "type_fields", "type_fields_extension", "variable_declaration",
-  "function_declaration", "lvalue", "lvalue_extension", YY_NULLPTR
+  "function_declaration", "lvalue", "field_extension",
+  "subscript_extension", YY_NULLPTR
   };
 #endif
 
@@ -1078,14 +1147,14 @@ namespace yy {
   const unsigned char
   parser::yyrline_[] =
   {
-       0,    72,    72,    74,    75,    76,    77,    78,    79,    80,
-      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-      91,    93,    94,    96,    97,    99,   101,   102,   104,   105,
-     108,   109,   110,   111,   113,   115,   116,   117,   118,   119,
-     120,   122,   123,   126,   128,   130,   131,   134,   137,   139,
-     141,   143,   145,   147,   149,   150,   152,   153,   154,   156,
-     158,   159,   160,   162,   163,   165,   166,   168,   169,   171,
-     172,   174,   176,   177,   178
+       0,    74,    74,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,    90,    91,    92,
+      93,    95,    96,    98,    99,   101,   103,   104,   106,   107,
+     110,   111,   112,   113,   115,   117,   118,   119,   120,   121,
+     122,   124,   125,   128,   130,   132,   133,   136,   139,   141,
+     143,   145,   147,   149,   151,   152,   154,   155,   156,   158,
+     160,   161,   162,   164,   165,   167,   168,   170,   171,   173,
+     174,   176,   177,   178,   180,   181,   182,   184,   185,   186
   };
 
   void
@@ -1117,9 +1186,9 @@ namespace yy {
 
 
 } // yy
-#line 1121 "tiger.tab.cc"
+#line 1190 "tiger.tab.cc"
 
-#line 179 "tiger.yy"
+#line 187 "tiger.yy"
 
 
 void

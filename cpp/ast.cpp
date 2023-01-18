@@ -8,25 +8,25 @@ VariablePtr SimpleVariable::Node(int pos, SymbolPtr name) {
   return node;
 }
 
-VariablePtr FieldVariable::Node(int pos, VariablePtr var,
+FieldVariablePtr FieldVariable::Node(int pos, VariablePtr var,
                                 SymbolPtr field_name) {
-  VariablePtr node = std::make_shared<FieldVariable>(pos, var, field_name);
+  FieldVariablePtr node = std::make_shared<FieldVariable>(pos, var, field_name);
   return node;
 }
 
-VariablePtr FieldVariable::PartialNode(int pos, SymbolPtr field_name) {
-  VariablePtr node = std::make_shared<FieldVariable>(pos, field_name);
+FieldVariablePtr FieldVariable::PartialNode(int pos, SymbolPtr field_name) {
+  FieldVariablePtr node = std::make_shared<FieldVariable>(pos, field_name);
   return node;
 }
 
-VariablePtr SubscriptVariable::Node(int pos, VariablePtr var,
+SubscriptVariablePtr SubscriptVariable::Node(int pos, VariablePtr var,
                                     ExpressionPtr exp) {
-  VariablePtr node = std::make_shared<SubscriptVariable>(pos, var, exp);
+  SubscriptVariablePtr node = std::make_shared<SubscriptVariable>(pos, var, exp);
   return node;
 }
 
-VariablePtr SubscriptVariable::PartialNode(int pos, ExpressionPtr exp) {
-  VariablePtr node = std::make_shared<SubscriptVariable>(pos, exp); 
+SubscriptVariablePtr SubscriptVariable::PartialNode(int pos, ExpressionPtr exp) {
+  SubscriptVariablePtr node = std::make_shared<SubscriptVariable>(pos, exp); 
   return node; 
 }
 // Expressions

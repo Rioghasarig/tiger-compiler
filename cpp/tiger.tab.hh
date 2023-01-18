@@ -1,4 +1,4 @@
-// A Bison parser, made by GNU Bison 3.8.2.
+// A Bison parser, made by GNU Bison 3.8.
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
@@ -412,16 +412,21 @@ namespace yy {
       // exp
       char dummy1[sizeof (AST::ExpressionPtr)];
 
+      // field_extension
+      char dummy2[sizeof (AST::FieldVariablePtr)];
+
+      // subscript_extension
+      char dummy3[sizeof (AST::SubscriptVariablePtr)];
+
       // lvalue
-      // lvalue_extension
-      char dummy2[sizeof (AST::VariablePtr)];
+      char dummy4[sizeof (AST::VariablePtr)];
 
       // INT
-      char dummy3[sizeof (int)];
+      char dummy5[sizeof (int)];
 
       // ID
       // STRING
-      char dummy4[sizeof (std::string)];
+      char dummy6[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -443,7 +448,6 @@ namespace yy {
 #endif
     /// Backward compatibility (Bison 3.8).
     typedef value_type semantic_type;
-
     /// Symbol locations.
     typedef location location_type;
 
@@ -524,7 +528,7 @@ namespace yy {
     };
 
     /// Token kind, as returned by yylex.
-    typedef token::token_kind_type token_kind_type;
+    typedef token::yytokentype token_kind_type;
 
     /// Backward compatibility alias (Bison 3.6).
     typedef token_kind_type token_type;
@@ -613,7 +617,8 @@ namespace yy {
         S_variable_declaration = 74,             // variable_declaration
         S_function_declaration = 75,             // function_declaration
         S_lvalue = 76,                           // lvalue
-        S_lvalue_extension = 77                  // lvalue_extension
+        S_field_extension = 77,                  // field_extension
+        S_subscript_extension = 78               // subscript_extension
       };
     };
 
@@ -636,7 +641,7 @@ namespace yy {
       typedef Base super_type;
 
       /// Default constructor.
-      basic_symbol () YY_NOEXCEPT
+      basic_symbol ()
         : value ()
         , location ()
       {}
@@ -654,8 +659,15 @@ namespace yy {
         value.move< AST::ExpressionPtr > (std::move (that.value));
         break;
 
+      case symbol_kind::S_field_extension: // field_extension
+        value.move< AST::FieldVariablePtr > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_subscript_extension: // subscript_extension
+        value.move< AST::SubscriptVariablePtr > (std::move (that.value));
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
-      case symbol_kind::S_lvalue_extension: // lvalue_extension
         value.move< AST::VariablePtr > (std::move (that.value));
         break;
 
@@ -699,6 +711,34 @@ namespace yy {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const AST::ExpressionPtr& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, AST::FieldVariablePtr&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const AST::FieldVariablePtr& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, AST::SubscriptVariablePtr&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const AST::SubscriptVariablePtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -753,8 +793,6 @@ namespace yy {
         clear ();
       }
 
-
-
       /// Destroy contents, and record that is empty.
       void clear () YY_NOEXCEPT
       {
@@ -775,8 +813,15 @@ switch (yykind)
         value.template destroy< AST::ExpressionPtr > ();
         break;
 
+      case symbol_kind::S_field_extension: // field_extension
+        value.template destroy< AST::FieldVariablePtr > ();
+        break;
+
+      case symbol_kind::S_subscript_extension: // subscript_extension
+        value.template destroy< AST::SubscriptVariablePtr > ();
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
-      case symbol_kind::S_lvalue_extension: // lvalue_extension
         value.template destroy< AST::VariablePtr > ();
         break;
 
@@ -830,24 +875,22 @@ switch (yykind)
     /// Type access provider for token (enum) based symbols.
     struct by_kind
     {
-      /// The symbol kind as needed by the constructor.
-      typedef token_kind_type kind_type;
-
       /// Default constructor.
-      by_kind () YY_NOEXCEPT;
+      by_kind ();
 
 #if 201103L <= YY_CPLUSPLUS
       /// Move constructor.
-      by_kind (by_kind&& that) YY_NOEXCEPT;
+      by_kind (by_kind&& that);
 #endif
 
       /// Copy constructor.
-      by_kind (const by_kind& that) YY_NOEXCEPT;
+      by_kind (const by_kind& that);
+
+      /// The symbol kind as needed by the constructor.
+      typedef token_kind_type kind_type;
 
       /// Constructor from (external) token numbers.
-      by_kind (kind_type t) YY_NOEXCEPT;
-
-
+      by_kind (kind_type t);
 
       /// Record that this symbol is empty.
       void clear () YY_NOEXCEPT;
@@ -877,15 +920,15 @@ switch (yykind)
       typedef basic_symbol<by_kind> super_type;
 
       /// Empty symbol.
-      symbol_type () YY_NOEXCEPT {}
+      symbol_type () {}
 
       /// Constructor for valueless symbols, and symbols from each type.
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, location_type l)
-        : super_type (token_kind_type (tok), std::move (l))
+        : super_type (token_type (tok), std::move (l))
 #else
       symbol_type (int tok, const location_type& l)
-        : super_type (token_kind_type (tok), l)
+        : super_type (token_type (tok), l)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
@@ -896,10 +939,10 @@ switch (yykind)
       }
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, int v, location_type l)
-        : super_type (token_kind_type (tok), std::move (v), std::move (l))
+        : super_type (token_type (tok), std::move (v), std::move (l))
 #else
       symbol_type (int tok, const int& v, const location_type& l)
-        : super_type (token_kind_type (tok), v, l)
+        : super_type (token_type (tok), v, l)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
@@ -908,10 +951,10 @@ switch (yykind)
       }
 #if 201103L <= YY_CPLUSPLUS
       symbol_type (int tok, std::string v, location_type l)
-        : super_type (token_kind_type (tok), std::move (v), std::move (l))
+        : super_type (token_type (tok), std::move (v), std::move (l))
 #else
       symbol_type (int tok, const std::string& v, const location_type& l)
-        : super_type (token_kind_type (tok), v, l)
+        : super_type (token_type (tok), v, l)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
@@ -1695,19 +1738,19 @@ switch (yykind)
 
     /// Whether the given \c yypact_ value indicates a defaulted state.
     /// \param yyvalue   the value to check
-    static bool yy_pact_value_is_default_ (int yyvalue) YY_NOEXCEPT;
+    static bool yy_pact_value_is_default_ (int yyvalue);
 
     /// Whether the given \c yytable_ value indicates a syntax error.
     /// \param yyvalue   the value to check
-    static bool yy_table_value_is_error_ (int yyvalue) YY_NOEXCEPT;
+    static bool yy_table_value_is_error_ (int yyvalue);
 
     static const signed char yypact_ninf_;
     static const signed char yytable_ninf_;
 
     /// Convert a scanner token kind \a t to a symbol kind.
     /// In theory \a t should be a token_kind_type, but character literals
-    /// are valid, yet not members of the token_kind_type enum.
-    static symbol_kind_type yytranslate_ (int t) YY_NOEXCEPT;
+    /// are valid, yet not members of the token_type enum.
+    static symbol_kind_type yytranslate_ (int t);
 
 #if YYDEBUG || 0
     /// For a symbol, its name in clear.
@@ -1844,7 +1887,7 @@ switch (yykind)
       typedef typename S::size_type size_type;
       typedef typename std::ptrdiff_t index_type;
 
-      stack (size_type n = 200) YY_NOEXCEPT
+      stack (size_type n = 200)
         : seq_ (n)
       {}
 
@@ -1923,7 +1966,7 @@ switch (yykind)
       class slice
       {
       public:
-        slice (const stack& stack, index_type range) YY_NOEXCEPT
+        slice (const stack& stack, index_type range)
           : stack_ (stack)
           , range_ (range)
         {}
@@ -1973,14 +2016,14 @@ switch (yykind)
     void yypush_ (const char* m, state_type s, YY_MOVE_REF (symbol_type) sym);
 
     /// Pop \a n symbols from the stack.
-    void yypop_ (int n = 1) YY_NOEXCEPT;
+    void yypop_ (int n = 1);
 
     /// Constants.
     enum
     {
-      yylast_ = 333,     ///< Last index in yytable_.
-      yynnts_ = 31,  ///< Number of nonterminal symbols.
-      yyfinal_ = 46 ///< Termination state number.
+      yylast_ = 334,     ///< Last index in yytable_.
+      yynnts_ = 32,  ///< Number of nonterminal symbols.
+      yyfinal_ = 47 ///< Termination state number.
     };
 
 
@@ -1991,7 +2034,7 @@ switch (yykind)
 
   inline
   parser::symbol_kind_type
-  parser::yytranslate_ (int t) YY_NOEXCEPT
+  parser::yytranslate_ (int t)
   {
     return static_cast<symbol_kind_type> (t);
   }
@@ -2009,8 +2052,15 @@ switch (yykind)
         value.copy< AST::ExpressionPtr > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_field_extension: // field_extension
+        value.copy< AST::FieldVariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_subscript_extension: // subscript_extension
+        value.copy< AST::SubscriptVariablePtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
-      case symbol_kind::S_lvalue_extension: // lvalue_extension
         value.copy< AST::VariablePtr > (YY_MOVE (that.value));
         break;
 
@@ -2031,14 +2081,12 @@ switch (yykind)
 
 
 
-
   template <typename Base>
   parser::symbol_kind_type
   parser::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
-
 
   template <typename Base>
   bool
@@ -2058,8 +2106,15 @@ switch (yykind)
         value.move< AST::ExpressionPtr > (YY_MOVE (s.value));
         break;
 
+      case symbol_kind::S_field_extension: // field_extension
+        value.move< AST::FieldVariablePtr > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_subscript_extension: // subscript_extension
+        value.move< AST::SubscriptVariablePtr > (YY_MOVE (s.value));
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
-      case symbol_kind::S_lvalue_extension: // lvalue_extension
         value.move< AST::VariablePtr > (YY_MOVE (s.value));
         break;
 
@@ -2081,13 +2136,13 @@ switch (yykind)
 
   // by_kind.
   inline
-  parser::by_kind::by_kind () YY_NOEXCEPT
+  parser::by_kind::by_kind ()
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
   inline
-  parser::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
+  parser::by_kind::by_kind (by_kind&& that)
     : kind_ (that.kind_)
   {
     that.clear ();
@@ -2095,16 +2150,14 @@ switch (yykind)
 #endif
 
   inline
-  parser::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
+  parser::by_kind::by_kind (const by_kind& that)
     : kind_ (that.kind_)
   {}
 
   inline
-  parser::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
+  parser::by_kind::by_kind (token_kind_type t)
     : kind_ (yytranslate_ (t))
   {}
-
-
 
   inline
   void
@@ -2128,7 +2181,6 @@ switch (yykind)
     return kind_;
   }
 
-
   inline
   parser::symbol_kind_type
   parser::by_kind::type_get () const YY_NOEXCEPT
@@ -2136,9 +2188,8 @@ switch (yykind)
     return this->kind ();
   }
 
-
 } // yy
-#line 2142 "tiger.tab.hh"
+#line 2193 "tiger.tab.hh"
 
 
 
