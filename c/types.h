@@ -6,6 +6,7 @@
  */
 #ifndef TYPES_H
 #define TYPES_H
+#include "symbol.h"
 
 typedef struct Ty_ty_ *Ty_ty;
 typedef struct Ty_tyList_ *Ty_tyList;

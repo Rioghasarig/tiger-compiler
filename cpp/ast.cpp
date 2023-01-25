@@ -9,7 +9,7 @@ VariablePtr SimpleVariable::Node(int pos, SymbolPtr name) {
 }
 
 FieldVariablePtr FieldVariable::Node(int pos, VariablePtr var,
-                                SymbolPtr field_name) {
+                                     SymbolPtr field_name) {
   FieldVariablePtr node = std::make_shared<FieldVariable>(pos, var, field_name);
   return node;
 }
@@ -20,14 +20,16 @@ FieldVariablePtr FieldVariable::PartialNode(int pos, SymbolPtr field_name) {
 }
 
 SubscriptVariablePtr SubscriptVariable::Node(int pos, VariablePtr var,
-                                    ExpressionPtr exp) {
-  SubscriptVariablePtr node = std::make_shared<SubscriptVariable>(pos, var, exp);
+                                             ExpressionPtr exp) {
+  SubscriptVariablePtr node =
+      std::make_shared<SubscriptVariable>(pos, var, exp);
   return node;
 }
 
-SubscriptVariablePtr SubscriptVariable::PartialNode(int pos, ExpressionPtr exp) {
-  SubscriptVariablePtr node = std::make_shared<SubscriptVariable>(pos, exp); 
-  return node; 
+SubscriptVariablePtr SubscriptVariable::PartialNode(int pos,
+                                                    ExpressionPtr exp) {
+  SubscriptVariablePtr node = std::make_shared<SubscriptVariable>(pos, exp);
+  return node;
 }
 // Expressions
 
@@ -51,16 +53,24 @@ ExpressionPtr NilExpression::Node(int pos) {
   return node;
 }
 
-ExpressionPtr CallExpression::Node(int pos, SymbolPtr func,
-                                   ExpressionList args) {
-  ExpressionPtr node = std::make_shared<CallExpression>(pos, func, args);
+CallExpressionPtr CallExpression::Node(int pos, SymbolPtr func,
+                                       ExpressionList args) {
+  CallExpressionPtr node = std::make_shared<CallExpression>(pos, func, args);
   return node;
 }
 
-ExpressionPtr OpExpression::Node(int pos, oper op, ExpressionPtr left,
-                                 ExpressionPtr right) {
-  ExpressionPtr node = std::make_shared<OpExpression>(pos, op, left, right);
+BinOpExpressionPtr BinOpExpression::Node(int pos, oper op, ExpressionPtr left,
+                                         ExpressionPtr right) {
+  BinOpExpressionPtr node =
+      std::make_shared<BinOpExpression>(pos, op, left, right);
   return node;
+}
+
+UnOpExpressionPtr UnOpExpression::Node(int pos, oper op, ExpressionPtr arg) {
+    
+    UnOpExpressionPtr node =
+      std::make_shared<UnOpExpression>(pos, op, arg);
+    return node;  
 }
 
 ExpressionPtr RecordExpression::Node(int pos, SymbolPtr type,
@@ -69,8 +79,8 @@ ExpressionPtr RecordExpression::Node(int pos, SymbolPtr type,
   return node;
 }
 
-ExpressionPtr ExpressionSequence::Node(int pos, ExpressionList sequence) {
-  ExpressionPtr node = std::make_shared<ExpressionSequence>(pos, sequence);
+ExpressionSequencePtr ExpressionSequence::Node(int pos) {
+  ExpressionSequencePtr node = std::make_shared<ExpressionSequence>(pos);
   return node;
 }
 
@@ -95,6 +105,11 @@ ExpressionPtr WhileStatement::Node(int pos, ExpressionPtr test,
 ExpressionPtr ForStatement::Node(int pos, SymbolPtr var, ExpressionPtr lo,
                                  ExpressionPtr hi, ExpressionPtr body) {
   ExpressionPtr node = std::make_shared<ForStatement>(pos, var, lo, hi, body);
+  return node;
+}
+
+ExpressionPtr BreakStatement::Node(int pos) {
+  ExpressionPtr node = std::make_shared<BreakStatement>(pos);
   return node;
 }
 

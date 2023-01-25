@@ -217,8 +217,28 @@ namespace yy {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_arithmetic_exp: // arithmetic_exp
+      case symbol_kind::S_comparison_exp: // comparison_exp
+      case symbol_kind::S_boolean_exp: // boolean_exp
+        value.YY_MOVE_OR_COPY< AST::BinOpExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_function_call: // function_call
+        value.YY_MOVE_OR_COPY< AST::CallExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_function_args: // function_args
+      case symbol_kind::S_function_args_tail: // function_args_tail
+        value.YY_MOVE_OR_COPY< AST::ExpressionList > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_exp: // exp
         value.YY_MOVE_OR_COPY< AST::ExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_expression_sequence: // expression_sequence
+      case symbol_kind::S_exp_seq_tail: // exp_seq_tail
+        value.YY_MOVE_OR_COPY< AST::ExpressionSequencePtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_field_extension: // field_extension
@@ -229,8 +249,21 @@ namespace yy {
         value.YY_MOVE_OR_COPY< AST::SubscriptVariablePtr > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_negation_exp: // negation_exp
+        value.YY_MOVE_OR_COPY< AST::UnOpExpressionPtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
         value.YY_MOVE_OR_COPY< AST::VariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_record_field: // record_field
+        value.YY_MOVE_OR_COPY< AST::efield > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_record_list: // record_list
+      case symbol_kind::S_record_list_extension: // record_list_extension
+        value.YY_MOVE_OR_COPY< AST::efieldList > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
@@ -257,8 +290,28 @@ namespace yy {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_arithmetic_exp: // arithmetic_exp
+      case symbol_kind::S_comparison_exp: // comparison_exp
+      case symbol_kind::S_boolean_exp: // boolean_exp
+        value.move< AST::BinOpExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_function_call: // function_call
+        value.move< AST::CallExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_function_args: // function_args
+      case symbol_kind::S_function_args_tail: // function_args_tail
+        value.move< AST::ExpressionList > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_exp: // exp
         value.move< AST::ExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_expression_sequence: // expression_sequence
+      case symbol_kind::S_exp_seq_tail: // exp_seq_tail
+        value.move< AST::ExpressionSequencePtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_field_extension: // field_extension
@@ -269,8 +322,21 @@ namespace yy {
         value.move< AST::SubscriptVariablePtr > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_negation_exp: // negation_exp
+        value.move< AST::UnOpExpressionPtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
         value.move< AST::VariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_record_field: // record_field
+        value.move< AST::efield > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_record_list: // record_list
+      case symbol_kind::S_record_list_extension: // record_list_extension
+        value.move< AST::efieldList > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
@@ -297,8 +363,28 @@ namespace yy {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_arithmetic_exp: // arithmetic_exp
+      case symbol_kind::S_comparison_exp: // comparison_exp
+      case symbol_kind::S_boolean_exp: // boolean_exp
+        value.copy< AST::BinOpExpressionPtr > (that.value);
+        break;
+
+      case symbol_kind::S_function_call: // function_call
+        value.copy< AST::CallExpressionPtr > (that.value);
+        break;
+
+      case symbol_kind::S_function_args: // function_args
+      case symbol_kind::S_function_args_tail: // function_args_tail
+        value.copy< AST::ExpressionList > (that.value);
+        break;
+
       case symbol_kind::S_exp: // exp
         value.copy< AST::ExpressionPtr > (that.value);
+        break;
+
+      case symbol_kind::S_expression_sequence: // expression_sequence
+      case symbol_kind::S_exp_seq_tail: // exp_seq_tail
+        value.copy< AST::ExpressionSequencePtr > (that.value);
         break;
 
       case symbol_kind::S_field_extension: // field_extension
@@ -309,8 +395,21 @@ namespace yy {
         value.copy< AST::SubscriptVariablePtr > (that.value);
         break;
 
+      case symbol_kind::S_negation_exp: // negation_exp
+        value.copy< AST::UnOpExpressionPtr > (that.value);
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
         value.copy< AST::VariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_record_field: // record_field
+        value.copy< AST::efield > (that.value);
+        break;
+
+      case symbol_kind::S_record_list: // record_list
+      case symbol_kind::S_record_list_extension: // record_list_extension
+        value.copy< AST::efieldList > (that.value);
         break;
 
       case symbol_kind::S_INT: // INT
@@ -336,8 +435,28 @@ namespace yy {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_arithmetic_exp: // arithmetic_exp
+      case symbol_kind::S_comparison_exp: // comparison_exp
+      case symbol_kind::S_boolean_exp: // boolean_exp
+        value.move< AST::BinOpExpressionPtr > (that.value);
+        break;
+
+      case symbol_kind::S_function_call: // function_call
+        value.move< AST::CallExpressionPtr > (that.value);
+        break;
+
+      case symbol_kind::S_function_args: // function_args
+      case symbol_kind::S_function_args_tail: // function_args_tail
+        value.move< AST::ExpressionList > (that.value);
+        break;
+
       case symbol_kind::S_exp: // exp
         value.move< AST::ExpressionPtr > (that.value);
+        break;
+
+      case symbol_kind::S_expression_sequence: // expression_sequence
+      case symbol_kind::S_exp_seq_tail: // exp_seq_tail
+        value.move< AST::ExpressionSequencePtr > (that.value);
         break;
 
       case symbol_kind::S_field_extension: // field_extension
@@ -348,8 +467,21 @@ namespace yy {
         value.move< AST::SubscriptVariablePtr > (that.value);
         break;
 
+      case symbol_kind::S_negation_exp: // negation_exp
+        value.move< AST::UnOpExpressionPtr > (that.value);
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
         value.move< AST::VariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_record_field: // record_field
+        value.move< AST::efield > (that.value);
+        break;
+
+      case symbol_kind::S_record_list: // record_list
+      case symbol_kind::S_record_list_extension: // record_list_extension
+        value.move< AST::efieldList > (that.value);
         break;
 
       case symbol_kind::S_INT: // INT
@@ -620,8 +752,28 @@ namespace yy {
          when using variants.  */
       switch (yyr1_[yyn])
     {
+      case symbol_kind::S_arithmetic_exp: // arithmetic_exp
+      case symbol_kind::S_comparison_exp: // comparison_exp
+      case symbol_kind::S_boolean_exp: // boolean_exp
+        yylhs.value.emplace< AST::BinOpExpressionPtr > ();
+        break;
+
+      case symbol_kind::S_function_call: // function_call
+        yylhs.value.emplace< AST::CallExpressionPtr > ();
+        break;
+
+      case symbol_kind::S_function_args: // function_args
+      case symbol_kind::S_function_args_tail: // function_args_tail
+        yylhs.value.emplace< AST::ExpressionList > ();
+        break;
+
       case symbol_kind::S_exp: // exp
         yylhs.value.emplace< AST::ExpressionPtr > ();
+        break;
+
+      case symbol_kind::S_expression_sequence: // expression_sequence
+      case symbol_kind::S_exp_seq_tail: // exp_seq_tail
+        yylhs.value.emplace< AST::ExpressionSequencePtr > ();
         break;
 
       case symbol_kind::S_field_extension: // field_extension
@@ -632,8 +784,21 @@ namespace yy {
         yylhs.value.emplace< AST::SubscriptVariablePtr > ();
         break;
 
+      case symbol_kind::S_negation_exp: // negation_exp
+        yylhs.value.emplace< AST::UnOpExpressionPtr > ();
+        break;
+
       case symbol_kind::S_lvalue: // lvalue
         yylhs.value.emplace< AST::VariablePtr > ();
+        break;
+
+      case symbol_kind::S_record_field: // record_field
+        yylhs.value.emplace< AST::efield > ();
+        break;
+
+      case symbol_kind::S_record_list: // record_list
+      case symbol_kind::S_record_list_extension: // record_list_extension
+        yylhs.value.emplace< AST::efieldList > ();
         break;
 
       case symbol_kind::S_INT: // INT
@@ -666,73 +831,290 @@ namespace yy {
           switch (yyn)
             {
   case 2: // program: exp
-#line 74 "tiger.yy"
+#line 82 "tiger.yy"
              {absyn_root = yystack_[0].value.as < AST::ExpressionPtr > ();}
-#line 672 "tiger.tab.cc"
+#line 837 "tiger.tab.cc"
     break;
 
   case 3: // exp: INT
-#line 76 "tiger.yy"
+#line 84 "tiger.yy"
          {yylhs.value.as < AST::ExpressionPtr > () = AST::IntExpression::Node(drv.location.begin.line, yystack_[0].value.as < int > ());}
-#line 678 "tiger.tab.cc"
+#line 843 "tiger.tab.cc"
     break;
 
-  case 71: // lvalue: ID
+  case 5: // exp: NIL
+#line 86 "tiger.yy"
+         {yylhs.value.as < AST::ExpressionPtr > () = AST::NilExpression::Node(drv.location.begin.line);}
+#line 849 "tiger.tab.cc"
+    break;
+
+  case 6: // exp: STRING
+#line 87 "tiger.yy"
+            {yylhs.value.as < AST::ExpressionPtr > () = AST::StringExpression::Node(drv.location.begin.line, yystack_[0].value.as < std::string > ());}
+#line 855 "tiger.tab.cc"
+    break;
+
+  case 7: // exp: BREAK
+#line 88 "tiger.yy"
+           {yylhs.value.as < AST::ExpressionPtr > () = AST::BreakStatement::Node(drv.location.begin.line);}
+#line 861 "tiger.tab.cc"
+    break;
+
+  case 8: // exp: LPAREN expression_sequence RPAREN
+#line 89 "tiger.yy"
+                                       {yylhs.value.as < AST::ExpressionPtr > () = (AST::ExpressionPtr)yystack_[1].value.as < AST::ExpressionSequencePtr > ();}
+#line 867 "tiger.tab.cc"
+    break;
+
+  case 9: // exp: function_call
+#line 90 "tiger.yy"
+                   {yylhs.value.as < AST::ExpressionPtr > () = (AST::ExpressionPtr)yystack_[0].value.as < AST::CallExpressionPtr > ();}
+#line 873 "tiger.tab.cc"
+    break;
+
+  case 10: // exp: arithmetic_exp
+#line 91 "tiger.yy"
+                     {yylhs.value.as < AST::ExpressionPtr > () = (AST::ExpressionPtr)yystack_[0].value.as < AST::BinOpExpressionPtr > ();}
+#line 879 "tiger.tab.cc"
+    break;
+
+  case 21: // expression_sequence: %empty
+#line 103 "tiger.yy"
+                     {yylhs.value.as < AST::ExpressionSequencePtr > () = AST::ExpressionSequence::Node(drv.location.begin.line);}
+#line 885 "tiger.tab.cc"
+    break;
+
+  case 22: // expression_sequence: exp exp_seq_tail
+#line 104 "tiger.yy"
+                                      {yystack_[0].value.as < AST::ExpressionSequencePtr > ()->push_front(yystack_[1].value.as < AST::ExpressionPtr > ()); yylhs.value.as < AST::ExpressionSequencePtr > () = yystack_[0].value.as < AST::ExpressionSequencePtr > ();}
+#line 891 "tiger.tab.cc"
+    break;
+
+  case 23: // exp_seq_tail: %empty
+#line 106 "tiger.yy"
+                         {yylhs.value.as < AST::ExpressionSequencePtr > () = AST::ExpressionSequence::Node(drv.location.begin.line);}
+#line 897 "tiger.tab.cc"
+    break;
+
+  case 24: // exp_seq_tail: SEMICOLON exp exp_seq_tail
+#line 107 "tiger.yy"
+                                          {yystack_[0].value.as < AST::ExpressionSequencePtr > ()->push_front(yystack_[1].value.as < AST::ExpressionPtr > ()); yylhs.value.as < AST::ExpressionSequencePtr > () = yystack_[0].value.as < AST::ExpressionSequencePtr > ();}
+#line 903 "tiger.tab.cc"
+    break;
+
+  case 25: // function_call: ID LPAREN function_args RPAREN
+#line 110 "tiger.yy"
+  {yylhs.value.as < AST::CallExpressionPtr > () = AST::CallExpression::Node(drv.location.begin.line, AST::Symbol::Gen(yystack_[3].value.as < std::string > ()), yystack_[1].value.as < AST::ExpressionList > ());}
+#line 909 "tiger.tab.cc"
+    break;
+
+  case 26: // function_args: %empty
+#line 112 "tiger.yy"
+                           {yylhs.value.as < AST::ExpressionList > () = AST::ExpressionList();}
+#line 915 "tiger.tab.cc"
+    break;
+
+  case 27: // function_args: exp function_args_tail
+#line 113 "tiger.yy"
+                                      {yystack_[0].value.as < AST::ExpressionList > ().push_front(yystack_[1].value.as < AST::ExpressionPtr > ()); yylhs.value.as < AST::ExpressionList > () = std::move(yystack_[0].value.as < AST::ExpressionList > ());}
+#line 921 "tiger.tab.cc"
+    break;
+
+  case 28: // function_args_tail: %empty
+#line 115 "tiger.yy"
+                               {yylhs.value.as < AST::ExpressionList > () = AST::ExpressionList();}
+#line 927 "tiger.tab.cc"
+    break;
+
+  case 29: // function_args_tail: COMMA exp function_args_tail
+#line 116 "tiger.yy"
+                                                 {yystack_[0].value.as < AST::ExpressionList > ().push_back(yystack_[1].value.as < AST::ExpressionPtr > ()); yylhs.value.as < AST::ExpressionList > () = std::move(yystack_[0].value.as < AST::ExpressionList > ());}
+#line 933 "tiger.tab.cc"
+    break;
+
+  case 30: // arithmetic_exp: exp PLUS exp
+#line 120 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::plusOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 941 "tiger.tab.cc"
+    break;
+
+  case 31: // arithmetic_exp: exp MINUS exp
+#line 124 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::minusOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 949 "tiger.tab.cc"
+    break;
+
+  case 32: // arithmetic_exp: exp TIMES exp
+#line 128 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::timesOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 957 "tiger.tab.cc"
+    break;
+
+  case 33: // arithmetic_exp: exp DIVIDE exp
+#line 132 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::divideOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 965 "tiger.tab.cc"
+    break;
+
+  case 34: // negation_exp: MINUS exp
+#line 136 "tiger.yy"
+                                     {yylhs.value.as < AST::UnOpExpressionPtr > () = AST::UnOpExpression::Node(drv.location.begin.line,
+                                                        AST::UnOpExpression::negationOp, yystack_[0].value.as < AST::ExpressionPtr > ()); }
+#line 972 "tiger.tab.cc"
+    break;
+
+  case 35: // comparison_exp: exp EQ exp
+#line 140 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::eqOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 980 "tiger.tab.cc"
+    break;
+
+  case 36: // comparison_exp: exp NEQ exp
+#line 144 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::neqOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 988 "tiger.tab.cc"
+    break;
+
+  case 37: // comparison_exp: exp GT exp
+#line 148 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::gtOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 996 "tiger.tab.cc"
+    break;
+
+  case 38: // comparison_exp: exp GE exp
+#line 152 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::geOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 1004 "tiger.tab.cc"
+    break;
+
+  case 39: // comparison_exp: exp LT exp
+#line 156 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::ltOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 1012 "tiger.tab.cc"
+    break;
+
+  case 40: // comparison_exp: exp LE exp
+#line 160 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::leOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 1020 "tiger.tab.cc"
+    break;
+
+  case 41: // boolean_exp: exp AND exp
+#line 164 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::andOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 1028 "tiger.tab.cc"
+    break;
+
+  case 42: // boolean_exp: exp OR exp
+#line 168 "tiger.yy"
+  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
+                                    AST::BinOpExpression::orOp, 
+                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
+#line 1036 "tiger.tab.cc"
+    break;
+
+  case 44: // record_list: record_field record_list_extension
 #line 176 "tiger.yy"
-           {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[0].value.as < std::string > ()));}
-#line 684 "tiger.tab.cc"
+  {yystack_[0].value.as < AST::efieldList > ().push_front(yystack_[1].value.as < AST::efield > ()); yylhs.value.as < AST::efieldList > () = std::move(yystack_[0].value.as < AST::efieldList > ());}
+#line 1042 "tiger.tab.cc"
     break;
 
-  case 72: // lvalue: ID field_extension
-#line 177 "tiger.yy"
-                           {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
-#line 690 "tiger.tab.cc"
-    break;
-
-  case 73: // lvalue: ID subscript_extension
+  case 45: // record_list_extension: %empty
 #line 178 "tiger.yy"
-                               {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
-#line 696 "tiger.tab.cc"
+                       {yylhs.value.as < AST::efieldList > () = AST::efieldList();}
+#line 1048 "tiger.tab.cc"
     break;
 
-  case 74: // field_extension: DOT ID
+  case 46: // record_list_extension: COMMA record_field record_list_extension
 #line 180 "tiger.yy"
-                         {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[0].value.as < std::string > ())); }
-#line 702 "tiger.tab.cc"
+  {yystack_[0].value.as < AST::efieldList > ().push_front(yystack_[1].value.as < AST::efield > ()); yylhs.value.as < AST::efieldList > () = std::move(yystack_[0].value.as < AST::efieldList > ());}
+#line 1054 "tiger.tab.cc"
     break;
 
-  case 75: // field_extension: DOT ID field_extension
-#line 181 "tiger.yy"
-                                        {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::FieldVariablePtr > ());}
-#line 708 "tiger.tab.cc"
-    break;
-
-  case 76: // field_extension: DOT ID subscript_extension
+  case 47: // record_field: ID EQ exp
 #line 182 "tiger.yy"
+                        {yylhs.value.as < AST::efield > () = AST::efield{AST::Symbol::Gen(yystack_[2].value.as < std::string > ()), yystack_[0].value.as < AST::ExpressionPtr > ()};}
+#line 1060 "tiger.tab.cc"
+    break;
+
+  case 72: // lvalue: ID
+#line 223 "tiger.yy"
+           {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[0].value.as < std::string > ()));}
+#line 1066 "tiger.tab.cc"
+    break;
+
+  case 73: // lvalue: ID field_extension
+#line 224 "tiger.yy"
+                           {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
+#line 1072 "tiger.tab.cc"
+    break;
+
+  case 74: // lvalue: ID subscript_extension
+#line 225 "tiger.yy"
+                               {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
+#line 1078 "tiger.tab.cc"
+    break;
+
+  case 75: // field_extension: DOT ID
+#line 227 "tiger.yy"
+                         {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[0].value.as < std::string > ())); }
+#line 1084 "tiger.tab.cc"
+    break;
+
+  case 76: // field_extension: DOT ID field_extension
+#line 228 "tiger.yy"
+                                        {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::FieldVariablePtr > ());}
+#line 1090 "tiger.tab.cc"
+    break;
+
+  case 77: // field_extension: DOT ID subscript_extension
+#line 229 "tiger.yy"
                                             {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::FieldVariablePtr > ());}
-#line 714 "tiger.tab.cc"
+#line 1096 "tiger.tab.cc"
     break;
 
-  case 77: // subscript_extension: LBRACK exp RBRACK
-#line 184 "tiger.yy"
+  case 78: // subscript_extension: LBRACK exp RBRACK
+#line 231 "tiger.yy"
                                         {yylhs.value.as < AST::SubscriptVariablePtr > () = AST::SubscriptVariable::PartialNode(0, yystack_[1].value.as < AST::ExpressionPtr > ());}
-#line 720 "tiger.tab.cc"
+#line 1102 "tiger.tab.cc"
     break;
 
-  case 78: // subscript_extension: LBRACK exp RBRACK field_extension
-#line 185 "tiger.yy"
+  case 79: // subscript_extension: LBRACK exp RBRACK field_extension
+#line 232 "tiger.yy"
                                                        {yylhs.value.as < AST::SubscriptVariablePtr > () = AST::SubscriptVariable::PartialNode(0,yystack_[2].value.as < AST::ExpressionPtr > ()); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::SubscriptVariablePtr > ());}
-#line 726 "tiger.tab.cc"
+#line 1108 "tiger.tab.cc"
     break;
 
-  case 79: // subscript_extension: LBRACK exp RBRACK subscript_extension
-#line 186 "tiger.yy"
+  case 80: // subscript_extension: LBRACK exp RBRACK subscript_extension
+#line 233 "tiger.yy"
                                                            {yylhs.value.as < AST::SubscriptVariablePtr > () = AST::SubscriptVariable::PartialNode(0,yystack_[2].value.as < AST::ExpressionPtr > ()); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::SubscriptVariablePtr > ());}
-#line 732 "tiger.tab.cc"
+#line 1114 "tiger.tab.cc"
     break;
 
 
-#line 736 "tiger.tab.cc"
+#line 1118 "tiger.tab.cc"
 
             default:
               break;
@@ -925,109 +1307,105 @@ namespace yy {
 
 
 
-  const signed char parser::yypact_ninf_ = -40;
+  const signed char parser::yypact_ninf_ = -43;
 
   const signed char parser::yytable_ninf_ = -1;
 
   const short
   parser::yypact_[] =
   {
-       5,    21,   -40,   -40,     5,     5,     5,     5,    -2,    42,
-     -40,   -40,    20,   275,   -40,   -40,   -40,   -40,   -40,   -40,
-     -40,   -40,   -40,   -40,   -40,   -40,    -4,     5,     5,    22,
-      26,   -40,   -40,   182,    23,   -40,   231,   140,    12,    28,
-      40,    41,     7,    42,   -40,   -40,   -40,   -40,     5,     5,
+       5,    21,   -43,   -43,     5,     5,     5,     5,    -2,    18,
+     -43,   -43,    20,   254,   -43,   -43,   -43,   -43,   -43,   -43,
+     -43,   -43,   -43,   -43,   -43,   -43,    -4,     5,     5,    22,
+      26,   -43,   -43,   161,    23,   -43,   210,   107,    12,    28,
+      40,    41,     7,    18,   -43,   -43,   -43,   -43,     5,     5,
        5,     5,     5,     5,     5,     5,     5,     5,     5,     5,
-       5,    57,    51,   247,    44,    48,     4,     5,   -40,   -40,
-       5,     5,     5,    56,    -5,    46,     5,   -40,    -1,    -1,
-     -40,   -40,   299,   299,   299,   299,   299,   299,   287,   309,
-     275,     5,   -40,   -40,     1,     5,   -40,     5,   -40,   -40,
-     182,   214,   275,   194,    85,    86,     5,     8,    53,    57,
-       5,   -40,   -40,   102,   263,   -40,     5,     5,    83,    84,
-      65,   275,   -40,    85,    58,   -40,   -40,   -40,   299,    93,
-     -40,     4,   275,   161,    96,     6,     5,    87,    97,    82,
-       5,    98,   100,     5,   275,   -40,   -40,     5,   275,   104,
-     -40,    89,   275,   102,   105,     5,   -40,   108,   275,    98,
-     -40
+       5,    58,    55,   226,    46,    53,    80,     4,     5,   -43,
+     -43,     5,     5,     5,    78,    -5,    68,     5,   -43,    -1,
+      -1,   -43,   -43,   278,   278,   278,   278,   278,   278,   266,
+     288,   254,     5,   -43,   -43,     1,     5,   -43,    22,   -43,
+       5,   -43,   -43,   161,   193,   254,   173,    86,    87,     5,
+       8,    52,    58,     5,   -43,   -43,   254,    80,   242,   -43,
+       5,     5,    88,    83,    66,   254,   -43,    86,    57,   -43,
+     -43,   -43,   278,   -43,     4,   254,   140,    95,     6,     5,
+      85,    98,     5,    96,   100,     5,   254,   -43,   -43,   254,
+     101,   -43,    90,   254,    99,     5,   102,   254,    96,   -43
   };
 
   const signed char
   parser::yydefact_[] =
   {
-       0,    71,     6,     3,    21,     0,     0,     0,     0,    54,
+       0,    72,     6,     3,    21,     0,     0,     0,     0,    55,
        7,     5,     0,     2,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,     4,    26,     0,     0,
-       0,    72,    73,    23,     0,    34,     0,     0,     0,     0,
-       0,     0,     0,    54,    56,    57,    58,     1,     0,     0,
+       0,    73,    74,    23,     0,    34,     0,     0,     0,     0,
+       0,     0,     0,    55,    57,    58,    59,     1,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    28,     0,     0,     0,     0,    74,     0,    22,     8,
-       0,     0,     0,     0,     0,     0,    21,    55,    30,    31,
-      32,    33,    35,    36,    39,    40,    37,    38,    41,    42,
-      48,     0,    27,    25,    77,     0,    43,     0,    75,    76,
-      23,    50,    51,     0,    63,     0,     0,     0,     0,    28,
-       0,    78,    79,    45,     0,    24,     0,     0,     0,     0,
-       0,    67,    60,    63,     0,    59,    53,    29,    47,     0,
-      44,    77,    49,     0,     0,     0,     0,     0,     0,     0,
-       0,    65,     0,     0,    68,    61,    62,     0,    52,     0,
-      64,     0,    69,    45,     0,     0,    46,     0,    70,    65,
-      66
+       0,    28,     0,     0,     0,     0,    45,    75,     0,    22,
+       8,     0,     0,     0,     0,     0,     0,    21,    56,    30,
+      31,    32,    33,    35,    36,    39,    40,    37,    38,    41,
+      42,    49,     0,    27,    25,    78,     0,    43,     0,    44,
+       0,    76,    77,    23,    51,    52,     0,    64,     0,     0,
+       0,     0,    28,     0,    79,    80,    47,    45,     0,    24,
+       0,     0,     0,     0,     0,    68,    61,    64,     0,    60,
+      54,    29,    48,    46,    78,    50,     0,     0,     0,     0,
+       0,     0,     0,    66,     0,     0,    69,    62,    63,    53,
+       0,    65,     0,    70,     0,     0,     0,    71,    66,    67
   };
 
   const signed char
   parser::yypgoto_[] =
   {
-     -40,   -40,     0,    29,    13,   -40,   -40,    24,   -40,   -40,
-     -40,   -40,   -40,   -40,   -39,   -40,   -40,   -40,   -40,   -40,
-     -40,    72,   -40,   -40,   -40,     9,   -29,   -40,   -40,   -40,
-       2,     3
+     -43,   -43,     0,    30,     9,   -43,   -43,    10,   -43,   -43,
+     -43,   -43,   -43,   -43,    -9,    13,   -43,   -43,   -43,   -43,
+     -43,   -43,    71,   -43,   -43,   -43,   -12,   -42,   -43,   -43,
+     -43,     2,     3
   };
 
   const unsigned char
   parser::yydefgoto_[] =
   {
-       0,    12,    33,    34,    68,    14,    62,    92,    15,    16,
-      17,    18,    19,    65,   130,    20,    21,    22,    23,    24,
-      25,    42,    43,    44,   125,   119,   150,    45,    46,    26,
-     111,   112
+       0,    12,    33,    34,    69,    14,    62,    93,    15,    16,
+      17,    18,    19,    65,    99,    66,    20,    21,    22,    23,
+      24,    25,    42,    43,    44,   129,   123,   151,    45,    46,
+      26,   114,   115
   };
 
   const short
   parser::yytable_[] =
   {
-      13,    38,   105,    31,    32,    35,    36,    37,     1,     2,
-       3,   122,    97,   142,     4,    97,    30,    50,    51,    30,
-      47,   123,     5,   106,    60,    64,   143,    61,    63,    66,
-      27,    73,    28,    69,    29,     6,    30,   124,     7,     8,
-      72,   110,     9,    74,    75,    76,    10,    11,    78,    79,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    93,    96,    91,    95,   104,   107,   100,    98,    99,
-     101,   102,   103,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,    57,    58,    59,    39,    40,    41,   118,   120,
-     134,   109,   126,   136,   135,   113,   139,   114,   138,   141,
-     146,   145,   147,   151,   149,   108,   121,   154,   129,   155,
-     128,   159,   157,   115,   156,    77,   132,   133,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-     160,     0,   137,   127,     0,     0,   144,     0,     0,     0,
-     148,     0,     0,   152,     0,     0,     0,   153,     0,     0,
-       0,     0,     0,     0,     0,   158,    48,    49,    50,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,     0,     0,
-       0,     0,     0,     0,     0,     0,    71,    48,    49,    50,
-      51,    52,    53,    54,    55,    56,    57,    58,    59,     0,
-      67,     0,     0,     0,     0,     0,     0,   140,    48,    49,
-      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,     0,     0,     0,     0,     0,     0,     0,   117,
-      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
-      58,    59,     0,     0,     0,     0,   116,    48,    49,    50,
-      51,    52,    53,    54,    55,    56,    57,    58,    59,    94,
-       0,     0,    70,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,    57,    58,    59,   131,     0,     0,     0,    48,
+      13,    38,   108,    31,    32,    35,    36,    37,     1,     2,
+       3,   126,   100,   144,     4,   100,    30,    50,    51,    30,
+      47,   127,     5,   109,    60,    64,   145,    61,    63,    67,
+      27,    74,    28,    70,    29,     6,    30,   128,     7,     8,
+      73,   113,     9,    75,    76,    77,    10,    11,    79,    80,
+      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+      91,    39,    40,    41,    92,    94,    96,    97,   103,   101,
+     102,   104,   105,   106,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57,    58,    59,    98,   107,   110,   122,
+     124,   130,   112,   138,   139,   137,   116,   141,   143,   147,
+     118,   148,   150,   152,   154,   158,   156,   111,   133,   125,
+     155,   117,   119,   132,    78,   140,   159,     0,     0,     0,
+     135,   136,   131,    48,    49,    50,    51,    52,    53,    54,
+      55,    56,    57,    58,    59,     0,     0,     0,     0,   146,
+       0,     0,   149,    72,     0,   153,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,   157,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,    59,     0,    68,
+       0,     0,     0,     0,     0,     0,   142,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    48,
       49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
-      59,    48,    49,    50,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    48,    49,    50,    51,    52,    53,    54,
-      55,    56,    57,     0,    59,    48,    49,    50,    51,    -1,
-      -1,    -1,    -1,    -1,    -1,    48,    49,    50,    51,    52,
-      53,    54,    55,    56,    57
+      59,     0,     0,     0,     0,     0,     0,     0,   121,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
+      59,     0,     0,     0,     0,   120,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,    59,    95,     0,
+       0,    71,    48,    49,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,   134,     0,     0,     0,    48,    49,
+      50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
+      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
+      58,    59,    48,    49,    50,    51,    52,    53,    54,    55,
+      56,    57,     0,    59,    48,    49,    50,    51,    -1,    -1,
+      -1,    -1,    -1,    -1,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    57
   };
 
   const short
@@ -1039,34 +1417,32 @@ namespace yy {
        9,     3,    11,    10,    13,    30,    15,    29,    33,    34,
       28,    40,    37,     3,     3,    38,    41,    42,    48,    49,
       50,    51,    52,    53,    54,    55,    56,    57,    58,    59,
-      60,    10,    14,     6,    20,     9,    20,    67,    66,    66,
-      70,    71,    72,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    43,    44,    45,     3,     3,
-       7,    91,    39,    28,    10,    95,     3,    97,    40,     3,
-       3,    14,    20,     3,     6,    76,   106,     3,     6,    20,
-     110,     3,     7,   100,   153,    43,   116,   117,    16,    17,
-      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-     159,    -1,   123,   109,    -1,    -1,   136,    -1,    -1,    -1,
-     140,    -1,    -1,   143,    -1,    -1,    -1,   147,    -1,    -1,
+      60,    43,    44,    45,     6,    10,    20,    14,    68,    67,
+      67,    71,    72,    73,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,     6,     9,    20,     3,
+       3,    39,    92,    10,    28,     7,    96,    40,     3,    14,
+     100,     3,     6,     3,     3,     3,     7,    77,   117,   109,
+      20,    98,   103,   113,    43,   127,   158,    -1,    -1,    -1,
+     120,   121,   112,    16,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,    26,    27,    -1,    -1,    -1,    -1,   139,
+      -1,    -1,   142,    36,    -1,   145,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,   155,    16,    17,    18,    19,
-      20,    21,    22,    23,    24,    25,    26,    27,    -1,    -1,
+      20,    21,    22,    23,    24,    25,    26,    27,    -1,     8,
       -1,    -1,    -1,    -1,    -1,    -1,    36,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    -1,
-       8,    -1,    -1,    -1,    -1,    -1,    -1,    36,    16,    17,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    16,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+      27,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    35,    16,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+      27,    -1,    -1,    -1,    -1,    32,    16,    17,    18,    19,
+      20,    21,    22,    23,    24,    25,    26,    27,    12,    -1,
+      -1,    31,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    12,    -1,    -1,    -1,    16,    17,
       18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
       16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    35,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,    -1,    -1,    -1,    -1,    32,    16,    17,    18,
-      19,    20,    21,    22,    23,    24,    25,    26,    27,    12,
-      -1,    -1,    31,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    12,    -1,    -1,    -1,    16,
-      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    -1,    27,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25
+      26,    27,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    -1,    27,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25
   };
 
   const signed char
@@ -1074,21 +1450,20 @@ namespace yy {
   {
        0,     3,     4,     5,     9,    17,    30,    33,    34,    37,
       41,    42,    48,    49,    52,    55,    56,    57,    58,    59,
-      62,    63,    64,    65,    66,    67,    76,     9,    11,    13,
-      15,    77,    78,    49,    50,    49,    49,    49,     3,    43,
-      44,    45,    68,    69,    70,    74,    75,     0,    16,    17,
+      63,    64,    65,    66,    67,    68,    77,     9,    11,    13,
+      15,    78,    79,    49,    50,    49,    49,    49,     3,    43,
+      44,    45,    69,    70,    71,    75,    76,     0,    16,    17,
       18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
-      28,    49,    53,    49,     3,    60,     3,     8,    51,    10,
-      31,    36,    28,     3,     3,     3,    38,    68,    49,    49,
+      28,    49,    53,    49,     3,    60,    62,     3,     8,    51,
+      10,    31,    36,    28,     3,     3,     3,    38,    69,    49,
       49,    49,    49,    49,    49,    49,    49,    49,    49,    49,
-      49,     6,    54,    10,    12,    20,    14,    11,    77,    78,
-      49,    49,    49,    49,     9,     7,    28,    20,    50,    49,
-      40,    77,    78,    49,    49,    51,    32,    35,     3,    72,
-       3,    49,     3,    13,    29,    71,    39,    54,    49,     6,
-      61,    12,    49,    49,     7,    10,    28,    72,    40,     3,
-      36,     3,     7,    20,    49,    14,     3,    20,    49,     6,
-      73,     3,    49,    49,     3,    20,    61,     7,    49,     3,
-      73
+      49,    49,     6,    54,    10,    12,    20,    14,     6,    61,
+      11,    78,    79,    49,    49,    49,    49,     9,     7,    28,
+      20,    50,    49,    40,    78,    79,    49,    62,    49,    51,
+      32,    35,     3,    73,     3,    49,     3,    13,    29,    72,
+      39,    54,    49,    61,    12,    49,    49,     7,    10,    28,
+      73,    40,    36,     3,     7,    20,    49,    14,     3,    49,
+       6,    74,     3,    49,     3,    20,     7,    49,     3,    74
   };
 
   const signed char
@@ -1099,9 +1474,10 @@ namespace yy {
       49,    50,    50,    51,    51,    52,    53,    53,    54,    54,
       55,    55,    55,    55,    56,    57,    57,    57,    57,    57,
       57,    58,    58,    59,    60,    61,    61,    62,    63,    64,
-      64,    65,    66,    67,    68,    68,    69,    69,    69,    70,
-      71,    71,    71,    72,    72,    73,    73,    74,    74,    75,
-      75,    76,    76,    76,    77,    77,    77,    78,    78,    78
+      65,    65,    66,    67,    68,    69,    69,    70,    70,    70,
+      71,    72,    72,    72,    73,    73,    74,    74,    75,    75,
+      76,    76,    77,    77,    77,    78,    78,    78,    79,    79,
+      79
   };
 
   const signed char
@@ -1111,10 +1487,11 @@ namespace yy {
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     0,     2,     0,     3,     4,     0,     2,     0,     3,
        3,     3,     3,     3,     2,     3,     3,     3,     3,     3,
-       3,     3,     3,     4,     4,     0,     5,     6,     3,     6,
-       4,     4,     8,     5,     0,     2,     1,     1,     1,     4,
-       1,     3,     3,     0,     4,     0,     5,     4,     6,     7,
-       9,     1,     2,     2,     2,     3,     3,     3,     4,     4
+       3,     3,     3,     4,     2,     0,     3,     3,     6,     3,
+       6,     4,     4,     8,     5,     0,     2,     1,     1,     1,
+       4,     1,     3,     3,     0,     4,     0,     5,     4,     6,
+       7,     9,     1,     2,     2,     2,     3,     3,     3,     4,
+       4
   };
 
 
@@ -1133,12 +1510,12 @@ namespace yy {
   "program", "exp", "expression_sequence", "exp_seq_tail", "function_call",
   "function_args", "function_args_tail", "arithmetic_exp", "negation_exp",
   "comparison_exp", "boolean_exp", "record_creation", "record_list",
-  "record_list_extension", "array_creation", "assignment_exp",
-  "if_statement", "while_loop", "for_loop", "let_statement",
-  "declaration_sequence", "declaration", "type_declaration", "type",
-  "type_fields", "type_fields_extension", "variable_declaration",
-  "function_declaration", "lvalue", "field_extension",
-  "subscript_extension", YY_NULLPTR
+  "record_list_extension", "record_field", "array_creation",
+  "assignment_exp", "if_statement", "while_loop", "for_loop",
+  "let_statement", "declaration_sequence", "declaration",
+  "type_declaration", "type", "type_fields", "type_fields_extension",
+  "variable_declaration", "function_declaration", "lvalue",
+  "field_extension", "subscript_extension", YY_NULLPTR
   };
 #endif
 
@@ -1147,14 +1524,15 @@ namespace yy {
   const unsigned char
   parser::yyrline_[] =
   {
-       0,    74,    74,    76,    77,    78,    79,    80,    81,    82,
-      83,    84,    85,    86,    87,    88,    89,    90,    91,    92,
-      93,    95,    96,    98,    99,   101,   103,   104,   106,   107,
-     110,   111,   112,   113,   115,   117,   118,   119,   120,   121,
-     122,   124,   125,   128,   130,   132,   133,   136,   139,   141,
-     143,   145,   147,   149,   151,   152,   154,   155,   156,   158,
-     160,   161,   162,   164,   165,   167,   168,   170,   171,   173,
-     174,   176,   177,   178,   180,   181,   182,   184,   185,   186
+       0,    82,    82,    84,    85,    86,    87,    88,    89,    90,
+      91,    92,    93,    94,    95,    96,    97,    98,    99,   100,
+     101,   103,   104,   106,   107,   109,   112,   113,   115,   116,
+     119,   123,   127,   131,   136,   139,   143,   147,   151,   155,
+     159,   163,   167,   173,   175,   178,   179,   182,   184,   186,
+     188,   190,   192,   194,   196,   198,   199,   201,   202,   203,
+     205,   207,   208,   209,   211,   212,   214,   215,   217,   218,
+     220,   221,   223,   224,   225,   227,   228,   229,   231,   232,
+     233
   };
 
   void
@@ -1186,9 +1564,9 @@ namespace yy {
 
 
 } // yy
-#line 1190 "tiger.tab.cc"
+#line 1568 "tiger.tab.cc"
 
-#line 187 "tiger.yy"
+#line 234 "tiger.yy"
 
 
 void
