@@ -4,7 +4,7 @@
 #include "errormsg.h"
 #include "ast.h"
 
-AST::ExpressionPtr absyn_root; 
+ExpressionPtr absyn_root; 
 %}
 
 
@@ -38,18 +38,25 @@ AST::ExpressionPtr absyn_root;
 %token <std::string> ID STRING;
 %token <int> INT;
 
-%nterm <AST::ExpressionPtr> exp; 
-%nterm <AST::VariablePtr> lvalue; 
-%nterm <AST::FieldVariablePtr> field_extension;
-%nterm <AST::SubscriptVariablePtr> subscript_extension;
-%nterm <AST::ExpressionSequencePtr> expression_sequence exp_seq_tail;
-%nterm <AST::CallExpressionPtr> function_call;
-%nterm <AST::BinOpExpressionPtr> arithmetic_exp comparison_exp boolean_exp; 
-%nterm <AST::UnOpExpressionPtr> negation_exp; 
+%nterm <ExpressionPtr> exp; 
+%nterm <VariablePtr> lvalue; 
+%nterm <FieldVariablePtr> field_extension;
+%nterm <SubscriptVariablePtr> subscript_extension;
+%nterm <ExpressionSequencePtr> expression_sequence exp_seq_tail;
+%nterm <CallExpressionPtr> function_call;
+%nterm <BinOpExpressionPtr> arithmetic_exp comparison_exp boolean_exp; 
+%nterm <UnOpExpressionPtr> negation_exp; 
+%nterm <RecordExpressionPtr> record_expression; 
+%nterm <ArrayExpressionPtr> array_expression; 
+%nterm <AssignStatementPtr> assign_statement; 
+%nterm <IfStatementPtr> if_statement; 
+%nterm <WhileStatementPtr> while_statement;
+%nterm <ForStatementPtr> for_statement; 
 
-%nterm <AST::ExpressionList> function_args function_args_tail
-%nterm <AST::efieldList> record_list record_list_extension
-%nterm <AST::efield> record_field
+%nterm <SymbolReferencePtr> type; 
+%nterm <ExpressionListPtr> function_args function_args_tail
+%nterm <efieldList> record_list record_list_extension
+%nterm <efield> record_field
 
 %token 
   COMMA COLON SEMICOLON LPAREN RPAREN LBRACK RBRACK 
@@ -81,117 +88,133 @@ AST::ExpressionPtr absyn_root;
 
 program: exp {absyn_root = $1;}
 
-exp: INT {$$ = AST::IntExpression::Node(drv.location.begin.line, $1);}
+exp: INT {$$ = IntExpression::Node(drv.location.begin.line, $1);}
 exp: lvalue 
-exp: NIL {$$ = AST::NilExpression::Node(drv.location.begin.line);}
-exp: STRING {$$ = AST::StringExpression::Node(drv.location.begin.line, $1);}
-exp: BREAK {$$ = AST::BreakStatement::Node(drv.location.begin.line);}
-exp: LPAREN expression_sequence RPAREN {$$ = (AST::ExpressionPtr)$2;}
-exp: function_call {$$ = (AST::ExpressionPtr)$1;}
-exp: arithmetic_exp  {$$ = (AST::ExpressionPtr)$1;}
+exp: NIL {$$ = NilExpression::Node(drv.location.begin.line);}
+exp: STRING {$$ = StringExpression::Node(drv.location.begin.line, $1);}
+exp: BREAK {$$ = BreakStatement::Node(drv.location.begin.line);}
+exp: LPAREN expression_sequence RPAREN {$$ = (ExpressionPtr)$2;}
+exp: function_call {$$ = (ExpressionPtr)$1;}
+exp: arithmetic_exp  {$$ = (ExpressionPtr)$1;}
 exp: negation_exp 
 exp: comparison_exp 
 exp: boolean_exp 
-exp: record_creation 
-exp: array_creation 
-exp: assignment_exp 
+exp: record_expression
+exp: array_expression 
+exp: assign_statement 
 exp: if_statement 
-exp: while_loop 
-exp: for_loop 
+exp: while_statement 
+exp: for_statement
 exp: let_statement
 
-expression_sequence: {$$ = AST::ExpressionSequence::Node(drv.location.begin.line);}
+expression_sequence: {$$ = ExpressionSequence::Node(drv.location.begin.line);}
 expression_sequence: exp exp_seq_tail {$2->push_front($1); $$ = $2;}
 
-exp_seq_tail:  /*empty*/ {$$ = AST::ExpressionSequence::Node(drv.location.begin.line);}
+exp_seq_tail:  /*empty*/ {$$ = ExpressionSequence::Node(drv.location.begin.line);}
 exp_seq_tail: SEMICOLON exp exp_seq_tail  {$3->push_front($2); $$ = $3;}
 
 function_call: ID LPAREN function_args RPAREN 
-  {$$ = AST::CallExpression::Node(drv.location.begin.line, AST::Symbol::Gen($1), $3);}
+  {$$ = CallExpression::Node(drv.location.begin.line, Symbol::Gen($1), *$3);}
 	                                    
-function_args: /* empty */ {$$ = AST::ExpressionList();}
-function_args: exp function_args_tail {$2.push_front($1); $$ = std::move($2);}
+function_args: /* empty */ {$$ = std::make_shared<ExpressionList>();}
+function_args: exp function_args_tail {$2->push_front($1); $$ = $2;}
 
-function_args_tail: /*empty*/  {$$ = AST::ExpressionList();}
-function_args_tail: COMMA exp function_args_tail {$3.push_back($2); $$ = std::move($3);}
+function_args_tail: /*empty*/  {$$ = std::make_shared<ExpressionList>();}
+function_args_tail: COMMA exp function_args_tail {$3->push_back($2); $$ = $3;}
 
 
 arithmetic_exp:  exp PLUS exp 
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::plusOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::plusOp, 
                                     $1,$3);}
 arithmetic_exp:  exp MINUS exp 
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::minusOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::minusOp, 
                                     $1,$3);}
 arithmetic_exp:  exp TIMES exp 
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::timesOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::timesOp, 
                                     $1,$3);}
 arithmetic_exp:  exp DIVIDE exp 
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::divideOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::divideOp, 
                                     $1,$3);}
 
-negation_exp: MINUS exp %prec UMINUS {$$ = AST::UnOpExpression::Node(drv.location.begin.line,
-                                                        AST::UnOpExpression::negationOp, $2); }
+negation_exp: MINUS exp %prec UMINUS {$$ = UnOpExpression::Node(drv.location.begin.line,
+                                                        UnOpExpression::negationOp, $2); }
 
 comparison_exp: exp EQ exp 
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::eqOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::eqOp, 
                                     $1,$3);}
 comparison_exp: exp NEQ exp
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::neqOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::neqOp, 
                                     $1,$3);}
 comparison_exp: exp GT exp
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::gtOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::gtOp, 
                                     $1,$3);} 
 comparison_exp: exp GE exp
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::geOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::geOp, 
                                     $1,$3);} 
 comparison_exp: exp LT exp
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::ltOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::ltOp, 
                                     $1,$3);} 
 comparison_exp: exp LE exp 
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::leOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::leOp, 
                                     $1,$3);} 		
 boolean_exp: exp AND exp
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::andOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::andOp, 
                                     $1,$3);} 
 boolean_exp: exp OR exp
-  {$$ = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::orOp, 
+  {$$ = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::orOp, 
                                     $1,$3);}  
 
 
-record_creation: ID LBRACE record_list RBRACE
+record_expression: ID LBRACE record_list RBRACE 
+  {$$ = RecordExpression::Node(drv.location.begin.line,
+                              Symbol::Gen($1), 
+                              $3);}
 
 record_list: record_field record_list_extension 
   {$2.push_front($1); $$ = std::move($2);}
 	     
-record_list_extension: {$$ = AST::efieldList();}
+record_list_extension: {$$ = efieldList();}
 record_list_extension: COMMA record_field record_list_extension  
   {$3.push_front($2); $$ = std::move($3);}    
 
-record_field: ID EQ exp {$$ = AST::efield{AST::Symbol::Gen($1), $3};}
+record_field: ID EQ exp {$$ = efield{Symbol::Gen($1), $3};}
 
-array_creation: ID LBRACK exp RBRACK OF exp
+array_expression: ID LBRACK exp RBRACK OF exp
+  {$$ = ArrayExpression::Node(drv.location.begin.line,
+                                    Symbol::Gen($1),
+                                    $3, $6);}
 
-assignment_exp: lvalue ASSIGN exp
+assign_statement: lvalue ASSIGN exp 
+  {$$ = AssignStatement::Node(drv.location.begin.line,
+                              $1, $3);}
 
 if_statement: IF exp THEN exp ELSE exp
+  {$$ = IfStatement::Node(drv.location.begin.line,
+                                $2,$4,$6);}
 
 if_statement: IF exp THEN exp 
+  {$$ = IfStatement::Node(drv.location.begin.line,
+                                $2,$4, NULL);}
 
-while_loop: WHILE exp DO exp 
+while_statement: WHILE exp DO exp 
+  {$$ = WhileStatement::Node(drv.location.begin.line,
+                                    $2,$4);}
 
-for_loop: FOR ID ASSIGN exp TO exp DO exp
+for_statement: FOR ID ASSIGN exp TO exp DO exp 
+  {$$ = ForStatement::Node(drv.location.begin.line,
+                                Symbol::Gen($2), $4, $6,$8);}
 
 let_statement: LET declaration_sequence IN expression_sequence END
 
@@ -205,6 +228,8 @@ declaration: function_declaration
 type_declaration: TYPE ID EQ type 
 
 type: ID 
+  {$$ = SymbolReference::Node(drv.location.begin.line,
+                                    Symbol::Gen($1));}
 type: LBRACE  type_fields RBRACE 
 type: ARRAY OF ID 
 
@@ -220,17 +245,17 @@ variable_declaration: VAR ID COLON ID ASSIGN exp
 function_declaration: FUNCTION ID LPAREN type_fields RPAREN EQ exp
 function_declaration: FUNCTION ID LPAREN type_fields RPAREN COLON ID EQ exp
 
-lvalue: ID {$$ = AST::SimpleVariable::Node(0, AST::Symbol::Gen($1));}
-lvalue: ID field_extension {$$ = AST::SimpleVariable::Node(0, AST::Symbol::Gen($1)); $2->set_var($$);}
-lvalue: ID subscript_extension {$$ = AST::SimpleVariable::Node(0, AST::Symbol::Gen($1)); $2->set_var($$);}
+lvalue: ID {$$ = SimpleVariable::Node(0, Symbol::Gen($1));}
+lvalue: ID field_extension {$$ = SimpleVariable::Node(0, Symbol::Gen($1)); $2->set_var($$);}
+lvalue: ID subscript_extension {$$ = SimpleVariable::Node(0, Symbol::Gen($1)); $2->set_var($$);}
 
-field_extension: DOT ID  {$$ = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen($2)); }
-field_extension: DOT ID field_extension {$$ = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen($2)); $3->set_var($$);}
-field_extension: DOT ID subscript_extension {$$ = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen($2)); $3->set_var($$);}
+field_extension: DOT ID  {$$ = FieldVariable::PartialNode(0, Symbol::Gen($2)); }
+field_extension: DOT ID field_extension {$$ = FieldVariable::PartialNode(0, Symbol::Gen($2)); $3->set_var($$);}
+field_extension: DOT ID subscript_extension {$$ = FieldVariable::PartialNode(0, Symbol::Gen($2)); $3->set_var($$);}
 
-subscript_extension: LBRACK exp RBRACK  {$$ = AST::SubscriptVariable::PartialNode(0, $2);}
-subscript_extension: LBRACK exp RBRACK field_extension {$$ = AST::SubscriptVariable::PartialNode(0,$2); $4->set_var($$);}
-subscript_extension: LBRACK exp RBRACK subscript_extension {$$ = AST::SubscriptVariable::PartialNode(0,$2); $4->set_var($$);}
+subscript_extension: LBRACK exp RBRACK  {$$ = SubscriptVariable::PartialNode(0, $2);}
+subscript_extension: LBRACK exp RBRACK field_extension {$$ = SubscriptVariable::PartialNode(0,$2); $4->set_var($$);}
+subscript_extension: LBRACK exp RBRACK subscript_extension {$$ = SubscriptVariable::PartialNode(0,$2); $4->set_var($$);}
 %%
 
 void

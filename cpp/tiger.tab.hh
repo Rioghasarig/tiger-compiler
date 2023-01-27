@@ -409,50 +409,71 @@ namespace yy {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
+      // array_expression
+      char dummy1[sizeof (ArrayExpressionPtr)];
+
+      // assign_statement
+      char dummy2[sizeof (AssignStatementPtr)];
+
       // arithmetic_exp
       // comparison_exp
       // boolean_exp
-      char dummy1[sizeof (AST::BinOpExpressionPtr)];
+      char dummy3[sizeof (BinOpExpressionPtr)];
 
       // function_call
-      char dummy2[sizeof (AST::CallExpressionPtr)];
+      char dummy4[sizeof (CallExpressionPtr)];
 
       // function_args
       // function_args_tail
-      char dummy3[sizeof (AST::ExpressionList)];
+      char dummy5[sizeof (ExpressionListPtr)];
 
       // exp
-      char dummy4[sizeof (AST::ExpressionPtr)];
+      char dummy6[sizeof (ExpressionPtr)];
 
       // expression_sequence
       // exp_seq_tail
-      char dummy5[sizeof (AST::ExpressionSequencePtr)];
+      char dummy7[sizeof (ExpressionSequencePtr)];
 
       // field_extension
-      char dummy6[sizeof (AST::FieldVariablePtr)];
+      char dummy8[sizeof (FieldVariablePtr)];
+
+      // for_statement
+      char dummy9[sizeof (ForStatementPtr)];
+
+      // if_statement
+      char dummy10[sizeof (IfStatementPtr)];
+
+      // record_expression
+      char dummy11[sizeof (RecordExpressionPtr)];
 
       // subscript_extension
-      char dummy7[sizeof (AST::SubscriptVariablePtr)];
+      char dummy12[sizeof (SubscriptVariablePtr)];
+
+      // type
+      char dummy13[sizeof (SymbolReferencePtr)];
 
       // negation_exp
-      char dummy8[sizeof (AST::UnOpExpressionPtr)];
+      char dummy14[sizeof (UnOpExpressionPtr)];
 
       // lvalue
-      char dummy9[sizeof (AST::VariablePtr)];
+      char dummy15[sizeof (VariablePtr)];
+
+      // while_statement
+      char dummy16[sizeof (WhileStatementPtr)];
 
       // record_field
-      char dummy10[sizeof (AST::efield)];
+      char dummy17[sizeof (efield)];
 
       // record_list
       // record_list_extension
-      char dummy11[sizeof (AST::efieldList)];
+      char dummy18[sizeof (efieldList)];
 
       // INT
-      char dummy12[sizeof (int)];
+      char dummy19[sizeof (int)];
 
       // ID
       // STRING
-      char dummy13[sizeof (std::string)];
+      char dummy20[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -625,15 +646,15 @@ namespace yy {
         S_negation_exp = 56,                     // negation_exp
         S_comparison_exp = 57,                   // comparison_exp
         S_boolean_exp = 58,                      // boolean_exp
-        S_record_creation = 59,                  // record_creation
+        S_record_expression = 59,                // record_expression
         S_record_list = 60,                      // record_list
         S_record_list_extension = 61,            // record_list_extension
         S_record_field = 62,                     // record_field
-        S_array_creation = 63,                   // array_creation
-        S_assignment_exp = 64,                   // assignment_exp
+        S_array_expression = 63,                 // array_expression
+        S_assign_statement = 64,                 // assign_statement
         S_if_statement = 65,                     // if_statement
-        S_while_loop = 66,                       // while_loop
-        S_for_loop = 67,                         // for_loop
+        S_while_statement = 66,                  // while_statement
+        S_for_statement = 67,                    // for_statement
         S_let_statement = 68,                    // let_statement
         S_declaration_sequence = 69,             // declaration_sequence
         S_declaration = 70,                      // declaration
@@ -682,53 +703,81 @@ namespace yy {
       {
         switch (this->kind ())
     {
+      case symbol_kind::S_array_expression: // array_expression
+        value.move< ArrayExpressionPtr > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_assign_statement: // assign_statement
+        value.move< AssignStatementPtr > (std::move (that.value));
+        break;
+
       case symbol_kind::S_arithmetic_exp: // arithmetic_exp
       case symbol_kind::S_comparison_exp: // comparison_exp
       case symbol_kind::S_boolean_exp: // boolean_exp
-        value.move< AST::BinOpExpressionPtr > (std::move (that.value));
+        value.move< BinOpExpressionPtr > (std::move (that.value));
         break;
 
       case symbol_kind::S_function_call: // function_call
-        value.move< AST::CallExpressionPtr > (std::move (that.value));
+        value.move< CallExpressionPtr > (std::move (that.value));
         break;
 
       case symbol_kind::S_function_args: // function_args
       case symbol_kind::S_function_args_tail: // function_args_tail
-        value.move< AST::ExpressionList > (std::move (that.value));
+        value.move< ExpressionListPtr > (std::move (that.value));
         break;
 
       case symbol_kind::S_exp: // exp
-        value.move< AST::ExpressionPtr > (std::move (that.value));
+        value.move< ExpressionPtr > (std::move (that.value));
         break;
 
       case symbol_kind::S_expression_sequence: // expression_sequence
       case symbol_kind::S_exp_seq_tail: // exp_seq_tail
-        value.move< AST::ExpressionSequencePtr > (std::move (that.value));
+        value.move< ExpressionSequencePtr > (std::move (that.value));
         break;
 
       case symbol_kind::S_field_extension: // field_extension
-        value.move< AST::FieldVariablePtr > (std::move (that.value));
+        value.move< FieldVariablePtr > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_for_statement: // for_statement
+        value.move< ForStatementPtr > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_if_statement: // if_statement
+        value.move< IfStatementPtr > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_record_expression: // record_expression
+        value.move< RecordExpressionPtr > (std::move (that.value));
         break;
 
       case symbol_kind::S_subscript_extension: // subscript_extension
-        value.move< AST::SubscriptVariablePtr > (std::move (that.value));
+        value.move< SubscriptVariablePtr > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_type: // type
+        value.move< SymbolReferencePtr > (std::move (that.value));
         break;
 
       case symbol_kind::S_negation_exp: // negation_exp
-        value.move< AST::UnOpExpressionPtr > (std::move (that.value));
+        value.move< UnOpExpressionPtr > (std::move (that.value));
         break;
 
       case symbol_kind::S_lvalue: // lvalue
-        value.move< AST::VariablePtr > (std::move (that.value));
+        value.move< VariablePtr > (std::move (that.value));
+        break;
+
+      case symbol_kind::S_while_statement: // while_statement
+        value.move< WhileStatementPtr > (std::move (that.value));
         break;
 
       case symbol_kind::S_record_field: // record_field
-        value.move< AST::efield > (std::move (that.value));
+        value.move< efield > (std::move (that.value));
         break;
 
       case symbol_kind::S_record_list: // record_list
       case symbol_kind::S_record_list_extension: // record_list_extension
-        value.move< AST::efieldList > (std::move (that.value));
+        value.move< efieldList > (std::move (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
@@ -764,13 +813,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::BinOpExpressionPtr&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, ArrayExpressionPtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::BinOpExpressionPtr& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const ArrayExpressionPtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -778,13 +827,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::CallExpressionPtr&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, AssignStatementPtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::CallExpressionPtr& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const AssignStatementPtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -792,13 +841,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::ExpressionList&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, BinOpExpressionPtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::ExpressionList& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const BinOpExpressionPtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -806,13 +855,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::ExpressionPtr&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, CallExpressionPtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::ExpressionPtr& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const CallExpressionPtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -820,13 +869,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::ExpressionSequencePtr&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, ExpressionListPtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::ExpressionSequencePtr& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const ExpressionListPtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -834,13 +883,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::FieldVariablePtr&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, ExpressionPtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::FieldVariablePtr& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const ExpressionPtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -848,13 +897,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::SubscriptVariablePtr&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, ExpressionSequencePtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::SubscriptVariablePtr& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const ExpressionSequencePtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -862,13 +911,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::UnOpExpressionPtr&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, FieldVariablePtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::UnOpExpressionPtr& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const FieldVariablePtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -876,13 +925,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::VariablePtr&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, ForStatementPtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::VariablePtr& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const ForStatementPtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -890,13 +939,13 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::efield&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, IfStatementPtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::efield& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const IfStatementPtr& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -904,13 +953,111 @@ namespace yy {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, AST::efieldList&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, RecordExpressionPtr&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const AST::efieldList& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const RecordExpressionPtr& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, SubscriptVariablePtr&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const SubscriptVariablePtr& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, SymbolReferencePtr&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const SymbolReferencePtr& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, UnOpExpressionPtr&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const UnOpExpressionPtr& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, VariablePtr&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const VariablePtr& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, WhileStatementPtr&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const WhileStatementPtr& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, efield&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const efield& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, efieldList&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const efieldList& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -967,53 +1114,81 @@ namespace yy {
         // Value type destructor.
 switch (yykind)
     {
+      case symbol_kind::S_array_expression: // array_expression
+        value.template destroy< ArrayExpressionPtr > ();
+        break;
+
+      case symbol_kind::S_assign_statement: // assign_statement
+        value.template destroy< AssignStatementPtr > ();
+        break;
+
       case symbol_kind::S_arithmetic_exp: // arithmetic_exp
       case symbol_kind::S_comparison_exp: // comparison_exp
       case symbol_kind::S_boolean_exp: // boolean_exp
-        value.template destroy< AST::BinOpExpressionPtr > ();
+        value.template destroy< BinOpExpressionPtr > ();
         break;
 
       case symbol_kind::S_function_call: // function_call
-        value.template destroy< AST::CallExpressionPtr > ();
+        value.template destroy< CallExpressionPtr > ();
         break;
 
       case symbol_kind::S_function_args: // function_args
       case symbol_kind::S_function_args_tail: // function_args_tail
-        value.template destroy< AST::ExpressionList > ();
+        value.template destroy< ExpressionListPtr > ();
         break;
 
       case symbol_kind::S_exp: // exp
-        value.template destroy< AST::ExpressionPtr > ();
+        value.template destroy< ExpressionPtr > ();
         break;
 
       case symbol_kind::S_expression_sequence: // expression_sequence
       case symbol_kind::S_exp_seq_tail: // exp_seq_tail
-        value.template destroy< AST::ExpressionSequencePtr > ();
+        value.template destroy< ExpressionSequencePtr > ();
         break;
 
       case symbol_kind::S_field_extension: // field_extension
-        value.template destroy< AST::FieldVariablePtr > ();
+        value.template destroy< FieldVariablePtr > ();
+        break;
+
+      case symbol_kind::S_for_statement: // for_statement
+        value.template destroy< ForStatementPtr > ();
+        break;
+
+      case symbol_kind::S_if_statement: // if_statement
+        value.template destroy< IfStatementPtr > ();
+        break;
+
+      case symbol_kind::S_record_expression: // record_expression
+        value.template destroy< RecordExpressionPtr > ();
         break;
 
       case symbol_kind::S_subscript_extension: // subscript_extension
-        value.template destroy< AST::SubscriptVariablePtr > ();
+        value.template destroy< SubscriptVariablePtr > ();
+        break;
+
+      case symbol_kind::S_type: // type
+        value.template destroy< SymbolReferencePtr > ();
         break;
 
       case symbol_kind::S_negation_exp: // negation_exp
-        value.template destroy< AST::UnOpExpressionPtr > ();
+        value.template destroy< UnOpExpressionPtr > ();
         break;
 
       case symbol_kind::S_lvalue: // lvalue
-        value.template destroy< AST::VariablePtr > ();
+        value.template destroy< VariablePtr > ();
+        break;
+
+      case symbol_kind::S_while_statement: // while_statement
+        value.template destroy< WhileStatementPtr > ();
         break;
 
       case symbol_kind::S_record_field: // record_field
-        value.template destroy< AST::efield > ();
+        value.template destroy< efield > ();
         break;
 
       case symbol_kind::S_record_list: // record_list
       case symbol_kind::S_record_list_extension: // record_list_extension
-        value.template destroy< AST::efieldList > ();
+        value.template destroy< efieldList > ();
         break;
 
       case symbol_kind::S_INT: // INT
@@ -1985,7 +2160,7 @@ switch (yykind)
 
 #if YYDEBUG
     // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-    static const unsigned char yyrline_[];
+    static const short yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r) const;
     /// Print the state stack on the debug stream.
@@ -2239,53 +2414,81 @@ switch (yykind)
   {
     switch (this->kind ())
     {
+      case symbol_kind::S_array_expression: // array_expression
+        value.copy< ArrayExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_assign_statement: // assign_statement
+        value.copy< AssignStatementPtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_arithmetic_exp: // arithmetic_exp
       case symbol_kind::S_comparison_exp: // comparison_exp
       case symbol_kind::S_boolean_exp: // boolean_exp
-        value.copy< AST::BinOpExpressionPtr > (YY_MOVE (that.value));
+        value.copy< BinOpExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_function_call: // function_call
-        value.copy< AST::CallExpressionPtr > (YY_MOVE (that.value));
+        value.copy< CallExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_function_args: // function_args
       case symbol_kind::S_function_args_tail: // function_args_tail
-        value.copy< AST::ExpressionList > (YY_MOVE (that.value));
+        value.copy< ExpressionListPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_exp: // exp
-        value.copy< AST::ExpressionPtr > (YY_MOVE (that.value));
+        value.copy< ExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_expression_sequence: // expression_sequence
       case symbol_kind::S_exp_seq_tail: // exp_seq_tail
-        value.copy< AST::ExpressionSequencePtr > (YY_MOVE (that.value));
+        value.copy< ExpressionSequencePtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_field_extension: // field_extension
-        value.copy< AST::FieldVariablePtr > (YY_MOVE (that.value));
+        value.copy< FieldVariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_for_statement: // for_statement
+        value.copy< ForStatementPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_if_statement: // if_statement
+        value.copy< IfStatementPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_record_expression: // record_expression
+        value.copy< RecordExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_subscript_extension: // subscript_extension
-        value.copy< AST::SubscriptVariablePtr > (YY_MOVE (that.value));
+        value.copy< SubscriptVariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_type: // type
+        value.copy< SymbolReferencePtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_negation_exp: // negation_exp
-        value.copy< AST::UnOpExpressionPtr > (YY_MOVE (that.value));
+        value.copy< UnOpExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_lvalue: // lvalue
-        value.copy< AST::VariablePtr > (YY_MOVE (that.value));
+        value.copy< VariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_while_statement: // while_statement
+        value.copy< WhileStatementPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_record_field: // record_field
-        value.copy< AST::efield > (YY_MOVE (that.value));
+        value.copy< efield > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_record_list: // record_list
       case symbol_kind::S_record_list_extension: // record_list_extension
-        value.copy< AST::efieldList > (YY_MOVE (that.value));
+        value.copy< efieldList > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
@@ -2326,53 +2529,81 @@ switch (yykind)
     super_type::move (s);
     switch (this->kind ())
     {
+      case symbol_kind::S_array_expression: // array_expression
+        value.move< ArrayExpressionPtr > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_assign_statement: // assign_statement
+        value.move< AssignStatementPtr > (YY_MOVE (s.value));
+        break;
+
       case symbol_kind::S_arithmetic_exp: // arithmetic_exp
       case symbol_kind::S_comparison_exp: // comparison_exp
       case symbol_kind::S_boolean_exp: // boolean_exp
-        value.move< AST::BinOpExpressionPtr > (YY_MOVE (s.value));
+        value.move< BinOpExpressionPtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_function_call: // function_call
-        value.move< AST::CallExpressionPtr > (YY_MOVE (s.value));
+        value.move< CallExpressionPtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_function_args: // function_args
       case symbol_kind::S_function_args_tail: // function_args_tail
-        value.move< AST::ExpressionList > (YY_MOVE (s.value));
+        value.move< ExpressionListPtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_exp: // exp
-        value.move< AST::ExpressionPtr > (YY_MOVE (s.value));
+        value.move< ExpressionPtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_expression_sequence: // expression_sequence
       case symbol_kind::S_exp_seq_tail: // exp_seq_tail
-        value.move< AST::ExpressionSequencePtr > (YY_MOVE (s.value));
+        value.move< ExpressionSequencePtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_field_extension: // field_extension
-        value.move< AST::FieldVariablePtr > (YY_MOVE (s.value));
+        value.move< FieldVariablePtr > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_for_statement: // for_statement
+        value.move< ForStatementPtr > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_if_statement: // if_statement
+        value.move< IfStatementPtr > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_record_expression: // record_expression
+        value.move< RecordExpressionPtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_subscript_extension: // subscript_extension
-        value.move< AST::SubscriptVariablePtr > (YY_MOVE (s.value));
+        value.move< SubscriptVariablePtr > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_type: // type
+        value.move< SymbolReferencePtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_negation_exp: // negation_exp
-        value.move< AST::UnOpExpressionPtr > (YY_MOVE (s.value));
+        value.move< UnOpExpressionPtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_lvalue: // lvalue
-        value.move< AST::VariablePtr > (YY_MOVE (s.value));
+        value.move< VariablePtr > (YY_MOVE (s.value));
+        break;
+
+      case symbol_kind::S_while_statement: // while_statement
+        value.move< WhileStatementPtr > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_record_field: // record_field
-        value.move< AST::efield > (YY_MOVE (s.value));
+        value.move< efield > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_record_list: // record_list
       case symbol_kind::S_record_list_extension: // record_list_extension
-        value.move< AST::efieldList > (YY_MOVE (s.value));
+        value.move< efieldList > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_INT: // INT
@@ -2446,7 +2677,7 @@ switch (yykind)
   }
 
 } // yy
-#line 2450 "tiger.tab.hh"
+#line 2681 "tiger.tab.hh"
 
 
 

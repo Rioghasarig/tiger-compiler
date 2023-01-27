@@ -1,7 +1,6 @@
 %{
 #include <string.h>
 #include "util.h"
-#include "symbol.h"
 #include "ast.h"
 #include "errormsg.h"
 #include "driver.hh" 

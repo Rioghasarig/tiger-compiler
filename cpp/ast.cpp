@@ -1,7 +1,5 @@
 #include "ast.h"
 
-namespace AST {
-
 // Variables
 VariablePtr SimpleVariable::Node(int pos, SymbolPtr name) {
   VariablePtr node = std::make_shared<SimpleVariable>(pos, name);
@@ -67,15 +65,14 @@ BinOpExpressionPtr BinOpExpression::Node(int pos, oper op, ExpressionPtr left,
 }
 
 UnOpExpressionPtr UnOpExpression::Node(int pos, oper op, ExpressionPtr arg) {
-    
-    UnOpExpressionPtr node =
-      std::make_shared<UnOpExpression>(pos, op, arg);
-    return node;  
+  UnOpExpressionPtr node = std::make_shared<UnOpExpression>(pos, op, arg);
+  return node;
 }
 
-ExpressionPtr RecordExpression::Node(int pos, SymbolPtr type,
-                                     efieldList fields) {
-  ExpressionPtr node = std::make_shared<RecordExpression>(pos, type, fields);
+RecordExpressionPtr RecordExpression::Node(int pos, SymbolPtr type,
+                                           efieldList fields) {
+  RecordExpressionPtr node =
+      std::make_shared<RecordExpression>(pos, type, fields);
   return node;
 }
 
@@ -84,27 +81,27 @@ ExpressionSequencePtr ExpressionSequence::Node(int pos) {
   return node;
 }
 
-ExpressionPtr AssignStatement::Node(int pos, VariablePtr var,
-                                    ExpressionPtr exp) {
-  ExpressionPtr node = std::make_shared<AssignStatement>(pos, var, exp);
+AssignStatementPtr AssignStatement::Node(int pos, VariablePtr var,
+                                         ExpressionPtr exp) {
+  AssignStatementPtr node = std::make_shared<AssignStatement>(pos, var, exp);
   return node;
 }
 
-ExpressionPtr IfStatement::Node(int pos, ExpressionPtr test, ExpressionPtr then,
-                                ExpressionPtr elsee) {
-  ExpressionPtr node = std::make_shared<IfStatement>(pos, test, then, elsee);
+IfStatementPtr IfStatement::Node(int pos, ExpressionPtr test,
+                                 ExpressionPtr then, ExpressionPtr elsee) {
+  IfStatementPtr node = std::make_shared<IfStatement>(pos, test, then, elsee);
   return node;
 }
 
-ExpressionPtr WhileStatement::Node(int pos, ExpressionPtr test,
-                                   ExpressionPtr body) {
-  ExpressionPtr node = std::make_shared<WhileStatement>(pos, test, body);
+WhileStatementPtr WhileStatement::Node(int pos, ExpressionPtr test,
+                                       ExpressionPtr body) {
+  WhileStatementPtr node = std::make_shared<WhileStatement>(pos, test, body);
   return node;
 }
 
-ExpressionPtr ForStatement::Node(int pos, SymbolPtr var, ExpressionPtr lo,
-                                 ExpressionPtr hi, ExpressionPtr body) {
-  ExpressionPtr node = std::make_shared<ForStatement>(pos, var, lo, hi, body);
+ForStatementPtr ForStatement::Node(int pos, SymbolPtr var, ExpressionPtr lo,
+                                   ExpressionPtr hi, ExpressionPtr body) {
+  ForStatementPtr node = std::make_shared<ForStatement>(pos, var, lo, hi, body);
   return node;
 }
 
@@ -119,9 +116,11 @@ ExpressionPtr LetStatement::Node(int pos, DeclarationList decs,
   return node;
 }
 
-ExpressionPtr ArrayCreation::Node(int pos, SymbolPtr type, ExpressionPtr size,
-                                  ExpressionPtr init) {
-  ExpressionPtr node = std::make_shared<ArrayCreation>(pos, type, size, init);
+ArrayExpressionPtr ArrayExpression::Node(int pos, SymbolPtr type,
+                                         ExpressionPtr size,
+                                         ExpressionPtr init) {
+  ArrayExpressionPtr node =
+      std::make_shared<ArrayExpression>(pos, type, size, init);
 
   return node;
 }
@@ -152,19 +151,19 @@ DeclarationPtr TypeDeclaration::Node(int pos, SymbolPtr type_name,
 }
 
 // Types
-TypePtr SymbolReference::Node(int pos, SymbolPtr type_name) {
-  TypePtr node = std::make_shared<SymbolReference>(pos, type_name);
+SymbolReferencePtr SymbolReference::Node(int pos, SymbolPtr type_name) {
+  SymbolReferencePtr node = std::make_shared<SymbolReference>(pos, type_name);
   return node;
 }
 
-TypePtr Record::Node(int pos, fieldList fields) {
-  TypePtr node = std::make_shared<Record>(pos, fields);
+TypePtr RecordType::Node(int pos, fieldList fields) {
+  TypePtr node = std::make_shared<RecordType>(pos, fields);
   return node;
 }
 
-TypePtr ArrayReference::Node(int pos, SymbolPtr array_name) {
-  TypePtr node = std::make_shared<ArrayReference>(pos, array_name);
+TypePtr ArrayType::Node(int pos, SymbolPtr array_name) {
+  TypePtr node = std::make_shared<ArrayType>(pos, array_name);
 
   return node;
 }
-}  // namespace AST
+// namespace AST

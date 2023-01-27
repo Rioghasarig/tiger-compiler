@@ -514,7 +514,6 @@ char *yytext;
 #line 2 "tiger.lex"
 #include <string.h>
 #include "util.h"
-#include "symbol.h"
 #include "ast.h"
 #include "errormsg.h"
 #include "driver.hh" 
@@ -530,14 +529,14 @@ int string_len;
 int comment_depth;
  
 yy::location loc; 
-#line 534 "lex.yy.c"
+#line 533 "lex.yy.c"
 #define YY_NO_INPUT 1
 
-#line 29 "tiger.lex"
+#line 28 "tiger.lex"
   // Code run each time a pattern is matched.
   # define YY_USER_ACTION  loc.columns (yyleng);
+#line 539 "lex.yy.c"
 #line 540 "lex.yy.c"
-#line 541 "lex.yy.c"
 
 #define INITIAL 0
 #define string_c 1
@@ -754,17 +753,17 @@ YY_DECL
 		}
 
 	{
-#line 32 "tiger.lex"
+#line 31 "tiger.lex"
 
 
-#line 35 "tiger.lex"
+#line 34 "tiger.lex"
   // A handy shortcut to the location held by the driver.
   yy::location& loc = drv.location;
   // Code run each time yylex is called.
   loc.step ();
 
 
-#line 768 "lex.yy.c"
+#line 767 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -823,229 +822,229 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 41 "tiger.lex"
+#line 40 "tiger.lex"
 { loc.step (); continue;}
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 42 "tiger.lex"
+#line 41 "tiger.lex"
 { loc.lines (yyleng); loc.step ();
          continue;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 44 "tiger.lex"
+#line 43 "tiger.lex"
 { return yy::parser::make_ARRAY(loc);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 45 "tiger.lex"
+#line 44 "tiger.lex"
 { return yy::parser::make_IF(loc);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 46 "tiger.lex"
+#line 45 "tiger.lex"
 { return yy::parser::make_THEN(loc);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 47 "tiger.lex"
+#line 46 "tiger.lex"
 { return yy::parser::make_ELSE(loc);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 48 "tiger.lex"
+#line 47 "tiger.lex"
 { return yy::parser::make_WHILE(loc);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 49 "tiger.lex"
+#line 48 "tiger.lex"
 { return yy::parser::make_FOR(loc);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 50 "tiger.lex"
+#line 49 "tiger.lex"
 { return yy::parser::make_TO(loc);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 51 "tiger.lex"
+#line 50 "tiger.lex"
 { return yy::parser::make_DO(loc);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 52 "tiger.lex"
+#line 51 "tiger.lex"
 { return yy::parser::make_LET(loc);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 53 "tiger.lex"
+#line 52 "tiger.lex"
 { return yy::parser::make_IN(loc);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 54 "tiger.lex"
+#line 53 "tiger.lex"
 { return yy::parser::make_END(loc);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 55 "tiger.lex"
+#line 54 "tiger.lex"
 { return yy::parser::make_OF(loc);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 56 "tiger.lex"
+#line 55 "tiger.lex"
 { return yy::parser::make_BREAK(loc);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 57 "tiger.lex"
+#line 56 "tiger.lex"
 { return yy::parser::make_NIL(loc);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 58 "tiger.lex"
+#line 57 "tiger.lex"
 { return yy::parser::make_FUNCTION(loc);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 59 "tiger.lex"
+#line 58 "tiger.lex"
 { return yy::parser::make_VAR(loc);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 60 "tiger.lex"
+#line 59 "tiger.lex"
 { return yy::parser::make_TYPE(loc);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 63 "tiger.lex"
+#line 62 "tiger.lex"
 { int n =atoi(yytext); return yy::parser::make_INT(n, loc);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 64 "tiger.lex"
+#line 63 "tiger.lex"
 { return yy::parser::make_ID(yytext, loc);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 68 "tiger.lex"
+#line 67 "tiger.lex"
 { return yy::parser::make_COMMA(loc);}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 69 "tiger.lex"
+#line 68 "tiger.lex"
 { return yy::parser::make_COLON(loc);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 70 "tiger.lex"
+#line 69 "tiger.lex"
 { return yy::parser::make_SEMICOLON(loc);}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 71 "tiger.lex"
+#line 70 "tiger.lex"
 { return yy::parser::make_LPAREN(loc);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 72 "tiger.lex"
+#line 71 "tiger.lex"
 { return yy::parser::make_RPAREN(loc);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 73 "tiger.lex"
+#line 72 "tiger.lex"
 { return yy::parser::make_LBRACK(loc);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 74 "tiger.lex"
+#line 73 "tiger.lex"
 { return yy::parser::make_RBRACK(loc);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 75 "tiger.lex"
+#line 74 "tiger.lex"
 { return yy::parser::make_LBRACE(loc);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 76 "tiger.lex"
+#line 75 "tiger.lex"
 { return yy::parser::make_RBRACE(loc);}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 77 "tiger.lex"
+#line 76 "tiger.lex"
 { return yy::parser::make_DOT(loc);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 78 "tiger.lex"
+#line 77 "tiger.lex"
 { return yy::parser::make_PLUS(loc);}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 79 "tiger.lex"
+#line 78 "tiger.lex"
 { return yy::parser::make_MINUS(loc);}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 80 "tiger.lex"
+#line 79 "tiger.lex"
 { return yy::parser::make_TIMES(loc);}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 81 "tiger.lex"
+#line 80 "tiger.lex"
 { return yy::parser::make_DIVIDE(loc);}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 82 "tiger.lex"
+#line 81 "tiger.lex"
 { return yy::parser::make_EQ(loc);}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 83 "tiger.lex"
+#line 82 "tiger.lex"
 { return yy::parser::make_NEQ(loc);}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 84 "tiger.lex"
+#line 83 "tiger.lex"
 { return yy::parser::make_LT(loc);}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 85 "tiger.lex"
+#line 84 "tiger.lex"
 { return yy::parser::make_LE(loc);}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 86 "tiger.lex"
+#line 85 "tiger.lex"
 { return yy::parser::make_GT(loc);}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 87 "tiger.lex"
+#line 86 "tiger.lex"
 { return yy::parser::make_GE(loc);}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 88 "tiger.lex"
+#line 87 "tiger.lex"
 { return yy::parser::make_AND(loc);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 89 "tiger.lex"
+#line 88 "tiger.lex"
 { return yy::parser::make_OR(loc);}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 90 "tiger.lex"
+#line 89 "tiger.lex"
 { return yy::parser::make_ASSIGN(loc);}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 92 "tiger.lex"
+#line 91 "tiger.lex"
 {
   
   string_buf_ptr = string_buf;
@@ -1055,7 +1054,7 @@ YY_RULE_SETUP
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 99 "tiger.lex"
+#line 98 "tiger.lex"
 {
   char *yptr = yytext;
   *string_buf_ptr++ = *yptr;
@@ -1064,7 +1063,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 105 "tiger.lex"
+#line 104 "tiger.lex"
 {
   EM_tokPos=charPos;
   charPos += string_len+1;
@@ -1074,42 +1073,42 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 112 "tiger.lex"
+#line 111 "tiger.lex"
 { comment_depth++; BEGIN(comment_c);}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 113 "tiger.lex"
+#line 112 "tiger.lex"
 { comment_depth++;}
 	YY_BREAK
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
-#line 114 "tiger.lex"
+#line 113 "tiger.lex"
 {}
 	YY_BREAK
 case 51:
 /* rule 51 can match eol */
 YY_RULE_SETUP
-#line 115 "tiger.lex"
+#line 114 "tiger.lex"
 {}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 116 "tiger.lex"
+#line 115 "tiger.lex"
 { comment_depth--; if(comment_depth==0) BEGIN(INITIAL);}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 118 "tiger.lex"
+#line 117 "tiger.lex"
 { EM_error(EM_tokPos,"illegal token");}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 119 "tiger.lex"
+#line 118 "tiger.lex"
 ECHO;
 	YY_BREAK
-#line 1113 "lex.yy.c"
+#line 1112 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(string_c):
 case YY_STATE_EOF(comment_c):
@@ -2079,7 +2078,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 119 "tiger.lex"
+#line 118 "tiger.lex"
 
 void
 driver::scan_begin ()

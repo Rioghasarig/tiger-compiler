@@ -44,7 +44,7 @@
 #include "errormsg.h"
 #include "ast.h"
 
-AST::ExpressionPtr absyn_root; 
+ExpressionPtr absyn_root; 
 
 #line 50 "tiger.tab.cc"
 
@@ -217,53 +217,81 @@ namespace yy {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_array_expression: // array_expression
+        value.YY_MOVE_OR_COPY< ArrayExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_assign_statement: // assign_statement
+        value.YY_MOVE_OR_COPY< AssignStatementPtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_arithmetic_exp: // arithmetic_exp
       case symbol_kind::S_comparison_exp: // comparison_exp
       case symbol_kind::S_boolean_exp: // boolean_exp
-        value.YY_MOVE_OR_COPY< AST::BinOpExpressionPtr > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< BinOpExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_function_call: // function_call
-        value.YY_MOVE_OR_COPY< AST::CallExpressionPtr > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< CallExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_function_args: // function_args
       case symbol_kind::S_function_args_tail: // function_args_tail
-        value.YY_MOVE_OR_COPY< AST::ExpressionList > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< ExpressionListPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_exp: // exp
-        value.YY_MOVE_OR_COPY< AST::ExpressionPtr > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< ExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_expression_sequence: // expression_sequence
       case symbol_kind::S_exp_seq_tail: // exp_seq_tail
-        value.YY_MOVE_OR_COPY< AST::ExpressionSequencePtr > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< ExpressionSequencePtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_field_extension: // field_extension
-        value.YY_MOVE_OR_COPY< AST::FieldVariablePtr > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< FieldVariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_for_statement: // for_statement
+        value.YY_MOVE_OR_COPY< ForStatementPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_if_statement: // if_statement
+        value.YY_MOVE_OR_COPY< IfStatementPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_record_expression: // record_expression
+        value.YY_MOVE_OR_COPY< RecordExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_subscript_extension: // subscript_extension
-        value.YY_MOVE_OR_COPY< AST::SubscriptVariablePtr > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< SubscriptVariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_type: // type
+        value.YY_MOVE_OR_COPY< SymbolReferencePtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_negation_exp: // negation_exp
-        value.YY_MOVE_OR_COPY< AST::UnOpExpressionPtr > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< UnOpExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_lvalue: // lvalue
-        value.YY_MOVE_OR_COPY< AST::VariablePtr > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< VariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_while_statement: // while_statement
+        value.YY_MOVE_OR_COPY< WhileStatementPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_record_field: // record_field
-        value.YY_MOVE_OR_COPY< AST::efield > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< efield > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_record_list: // record_list
       case symbol_kind::S_record_list_extension: // record_list_extension
-        value.YY_MOVE_OR_COPY< AST::efieldList > (YY_MOVE (that.value));
+        value.YY_MOVE_OR_COPY< efieldList > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
@@ -290,53 +318,81 @@ namespace yy {
   {
     switch (that.kind ())
     {
+      case symbol_kind::S_array_expression: // array_expression
+        value.move< ArrayExpressionPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_assign_statement: // assign_statement
+        value.move< AssignStatementPtr > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_arithmetic_exp: // arithmetic_exp
       case symbol_kind::S_comparison_exp: // comparison_exp
       case symbol_kind::S_boolean_exp: // boolean_exp
-        value.move< AST::BinOpExpressionPtr > (YY_MOVE (that.value));
+        value.move< BinOpExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_function_call: // function_call
-        value.move< AST::CallExpressionPtr > (YY_MOVE (that.value));
+        value.move< CallExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_function_args: // function_args
       case symbol_kind::S_function_args_tail: // function_args_tail
-        value.move< AST::ExpressionList > (YY_MOVE (that.value));
+        value.move< ExpressionListPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_exp: // exp
-        value.move< AST::ExpressionPtr > (YY_MOVE (that.value));
+        value.move< ExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_expression_sequence: // expression_sequence
       case symbol_kind::S_exp_seq_tail: // exp_seq_tail
-        value.move< AST::ExpressionSequencePtr > (YY_MOVE (that.value));
+        value.move< ExpressionSequencePtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_field_extension: // field_extension
-        value.move< AST::FieldVariablePtr > (YY_MOVE (that.value));
+        value.move< FieldVariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_for_statement: // for_statement
+        value.move< ForStatementPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_if_statement: // if_statement
+        value.move< IfStatementPtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_record_expression: // record_expression
+        value.move< RecordExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_subscript_extension: // subscript_extension
-        value.move< AST::SubscriptVariablePtr > (YY_MOVE (that.value));
+        value.move< SubscriptVariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_type: // type
+        value.move< SymbolReferencePtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_negation_exp: // negation_exp
-        value.move< AST::UnOpExpressionPtr > (YY_MOVE (that.value));
+        value.move< UnOpExpressionPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_lvalue: // lvalue
-        value.move< AST::VariablePtr > (YY_MOVE (that.value));
+        value.move< VariablePtr > (YY_MOVE (that.value));
+        break;
+
+      case symbol_kind::S_while_statement: // while_statement
+        value.move< WhileStatementPtr > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_record_field: // record_field
-        value.move< AST::efield > (YY_MOVE (that.value));
+        value.move< efield > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_record_list: // record_list
       case symbol_kind::S_record_list_extension: // record_list_extension
-        value.move< AST::efieldList > (YY_MOVE (that.value));
+        value.move< efieldList > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
@@ -363,53 +419,81 @@ namespace yy {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_array_expression: // array_expression
+        value.copy< ArrayExpressionPtr > (that.value);
+        break;
+
+      case symbol_kind::S_assign_statement: // assign_statement
+        value.copy< AssignStatementPtr > (that.value);
+        break;
+
       case symbol_kind::S_arithmetic_exp: // arithmetic_exp
       case symbol_kind::S_comparison_exp: // comparison_exp
       case symbol_kind::S_boolean_exp: // boolean_exp
-        value.copy< AST::BinOpExpressionPtr > (that.value);
+        value.copy< BinOpExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_function_call: // function_call
-        value.copy< AST::CallExpressionPtr > (that.value);
+        value.copy< CallExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_function_args: // function_args
       case symbol_kind::S_function_args_tail: // function_args_tail
-        value.copy< AST::ExpressionList > (that.value);
+        value.copy< ExpressionListPtr > (that.value);
         break;
 
       case symbol_kind::S_exp: // exp
-        value.copy< AST::ExpressionPtr > (that.value);
+        value.copy< ExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_expression_sequence: // expression_sequence
       case symbol_kind::S_exp_seq_tail: // exp_seq_tail
-        value.copy< AST::ExpressionSequencePtr > (that.value);
+        value.copy< ExpressionSequencePtr > (that.value);
         break;
 
       case symbol_kind::S_field_extension: // field_extension
-        value.copy< AST::FieldVariablePtr > (that.value);
+        value.copy< FieldVariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_for_statement: // for_statement
+        value.copy< ForStatementPtr > (that.value);
+        break;
+
+      case symbol_kind::S_if_statement: // if_statement
+        value.copy< IfStatementPtr > (that.value);
+        break;
+
+      case symbol_kind::S_record_expression: // record_expression
+        value.copy< RecordExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_subscript_extension: // subscript_extension
-        value.copy< AST::SubscriptVariablePtr > (that.value);
+        value.copy< SubscriptVariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_type: // type
+        value.copy< SymbolReferencePtr > (that.value);
         break;
 
       case symbol_kind::S_negation_exp: // negation_exp
-        value.copy< AST::UnOpExpressionPtr > (that.value);
+        value.copy< UnOpExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_lvalue: // lvalue
-        value.copy< AST::VariablePtr > (that.value);
+        value.copy< VariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_while_statement: // while_statement
+        value.copy< WhileStatementPtr > (that.value);
         break;
 
       case symbol_kind::S_record_field: // record_field
-        value.copy< AST::efield > (that.value);
+        value.copy< efield > (that.value);
         break;
 
       case symbol_kind::S_record_list: // record_list
       case symbol_kind::S_record_list_extension: // record_list_extension
-        value.copy< AST::efieldList > (that.value);
+        value.copy< efieldList > (that.value);
         break;
 
       case symbol_kind::S_INT: // INT
@@ -435,53 +519,81 @@ namespace yy {
     state = that.state;
     switch (that.kind ())
     {
+      case symbol_kind::S_array_expression: // array_expression
+        value.move< ArrayExpressionPtr > (that.value);
+        break;
+
+      case symbol_kind::S_assign_statement: // assign_statement
+        value.move< AssignStatementPtr > (that.value);
+        break;
+
       case symbol_kind::S_arithmetic_exp: // arithmetic_exp
       case symbol_kind::S_comparison_exp: // comparison_exp
       case symbol_kind::S_boolean_exp: // boolean_exp
-        value.move< AST::BinOpExpressionPtr > (that.value);
+        value.move< BinOpExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_function_call: // function_call
-        value.move< AST::CallExpressionPtr > (that.value);
+        value.move< CallExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_function_args: // function_args
       case symbol_kind::S_function_args_tail: // function_args_tail
-        value.move< AST::ExpressionList > (that.value);
+        value.move< ExpressionListPtr > (that.value);
         break;
 
       case symbol_kind::S_exp: // exp
-        value.move< AST::ExpressionPtr > (that.value);
+        value.move< ExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_expression_sequence: // expression_sequence
       case symbol_kind::S_exp_seq_tail: // exp_seq_tail
-        value.move< AST::ExpressionSequencePtr > (that.value);
+        value.move< ExpressionSequencePtr > (that.value);
         break;
 
       case symbol_kind::S_field_extension: // field_extension
-        value.move< AST::FieldVariablePtr > (that.value);
+        value.move< FieldVariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_for_statement: // for_statement
+        value.move< ForStatementPtr > (that.value);
+        break;
+
+      case symbol_kind::S_if_statement: // if_statement
+        value.move< IfStatementPtr > (that.value);
+        break;
+
+      case symbol_kind::S_record_expression: // record_expression
+        value.move< RecordExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_subscript_extension: // subscript_extension
-        value.move< AST::SubscriptVariablePtr > (that.value);
+        value.move< SubscriptVariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_type: // type
+        value.move< SymbolReferencePtr > (that.value);
         break;
 
       case symbol_kind::S_negation_exp: // negation_exp
-        value.move< AST::UnOpExpressionPtr > (that.value);
+        value.move< UnOpExpressionPtr > (that.value);
         break;
 
       case symbol_kind::S_lvalue: // lvalue
-        value.move< AST::VariablePtr > (that.value);
+        value.move< VariablePtr > (that.value);
+        break;
+
+      case symbol_kind::S_while_statement: // while_statement
+        value.move< WhileStatementPtr > (that.value);
         break;
 
       case symbol_kind::S_record_field: // record_field
-        value.move< AST::efield > (that.value);
+        value.move< efield > (that.value);
         break;
 
       case symbol_kind::S_record_list: // record_list
       case symbol_kind::S_record_list_extension: // record_list_extension
-        value.move< AST::efieldList > (that.value);
+        value.move< efieldList > (that.value);
         break;
 
       case symbol_kind::S_INT: // INT
@@ -752,53 +864,81 @@ namespace yy {
          when using variants.  */
       switch (yyr1_[yyn])
     {
+      case symbol_kind::S_array_expression: // array_expression
+        yylhs.value.emplace< ArrayExpressionPtr > ();
+        break;
+
+      case symbol_kind::S_assign_statement: // assign_statement
+        yylhs.value.emplace< AssignStatementPtr > ();
+        break;
+
       case symbol_kind::S_arithmetic_exp: // arithmetic_exp
       case symbol_kind::S_comparison_exp: // comparison_exp
       case symbol_kind::S_boolean_exp: // boolean_exp
-        yylhs.value.emplace< AST::BinOpExpressionPtr > ();
+        yylhs.value.emplace< BinOpExpressionPtr > ();
         break;
 
       case symbol_kind::S_function_call: // function_call
-        yylhs.value.emplace< AST::CallExpressionPtr > ();
+        yylhs.value.emplace< CallExpressionPtr > ();
         break;
 
       case symbol_kind::S_function_args: // function_args
       case symbol_kind::S_function_args_tail: // function_args_tail
-        yylhs.value.emplace< AST::ExpressionList > ();
+        yylhs.value.emplace< ExpressionListPtr > ();
         break;
 
       case symbol_kind::S_exp: // exp
-        yylhs.value.emplace< AST::ExpressionPtr > ();
+        yylhs.value.emplace< ExpressionPtr > ();
         break;
 
       case symbol_kind::S_expression_sequence: // expression_sequence
       case symbol_kind::S_exp_seq_tail: // exp_seq_tail
-        yylhs.value.emplace< AST::ExpressionSequencePtr > ();
+        yylhs.value.emplace< ExpressionSequencePtr > ();
         break;
 
       case symbol_kind::S_field_extension: // field_extension
-        yylhs.value.emplace< AST::FieldVariablePtr > ();
+        yylhs.value.emplace< FieldVariablePtr > ();
+        break;
+
+      case symbol_kind::S_for_statement: // for_statement
+        yylhs.value.emplace< ForStatementPtr > ();
+        break;
+
+      case symbol_kind::S_if_statement: // if_statement
+        yylhs.value.emplace< IfStatementPtr > ();
+        break;
+
+      case symbol_kind::S_record_expression: // record_expression
+        yylhs.value.emplace< RecordExpressionPtr > ();
         break;
 
       case symbol_kind::S_subscript_extension: // subscript_extension
-        yylhs.value.emplace< AST::SubscriptVariablePtr > ();
+        yylhs.value.emplace< SubscriptVariablePtr > ();
+        break;
+
+      case symbol_kind::S_type: // type
+        yylhs.value.emplace< SymbolReferencePtr > ();
         break;
 
       case symbol_kind::S_negation_exp: // negation_exp
-        yylhs.value.emplace< AST::UnOpExpressionPtr > ();
+        yylhs.value.emplace< UnOpExpressionPtr > ();
         break;
 
       case symbol_kind::S_lvalue: // lvalue
-        yylhs.value.emplace< AST::VariablePtr > ();
+        yylhs.value.emplace< VariablePtr > ();
+        break;
+
+      case symbol_kind::S_while_statement: // while_statement
+        yylhs.value.emplace< WhileStatementPtr > ();
         break;
 
       case symbol_kind::S_record_field: // record_field
-        yylhs.value.emplace< AST::efield > ();
+        yylhs.value.emplace< efield > ();
         break;
 
       case symbol_kind::S_record_list: // record_list
       case symbol_kind::S_record_list_extension: // record_list_extension
-        yylhs.value.emplace< AST::efieldList > ();
+        yylhs.value.emplace< efieldList > ();
         break;
 
       case symbol_kind::S_INT: // INT
@@ -831,290 +971,348 @@ namespace yy {
           switch (yyn)
             {
   case 2: // program: exp
-#line 82 "tiger.yy"
-             {absyn_root = yystack_[0].value.as < AST::ExpressionPtr > ();}
-#line 837 "tiger.tab.cc"
+#line 89 "tiger.yy"
+             {absyn_root = yystack_[0].value.as < ExpressionPtr > ();}
+#line 977 "tiger.tab.cc"
     break;
 
   case 3: // exp: INT
-#line 84 "tiger.yy"
-         {yylhs.value.as < AST::ExpressionPtr > () = AST::IntExpression::Node(drv.location.begin.line, yystack_[0].value.as < int > ());}
-#line 843 "tiger.tab.cc"
+#line 91 "tiger.yy"
+         {yylhs.value.as < ExpressionPtr > () = IntExpression::Node(drv.location.begin.line, yystack_[0].value.as < int > ());}
+#line 983 "tiger.tab.cc"
     break;
 
   case 5: // exp: NIL
-#line 86 "tiger.yy"
-         {yylhs.value.as < AST::ExpressionPtr > () = AST::NilExpression::Node(drv.location.begin.line);}
-#line 849 "tiger.tab.cc"
+#line 93 "tiger.yy"
+         {yylhs.value.as < ExpressionPtr > () = NilExpression::Node(drv.location.begin.line);}
+#line 989 "tiger.tab.cc"
     break;
 
   case 6: // exp: STRING
-#line 87 "tiger.yy"
-            {yylhs.value.as < AST::ExpressionPtr > () = AST::StringExpression::Node(drv.location.begin.line, yystack_[0].value.as < std::string > ());}
-#line 855 "tiger.tab.cc"
+#line 94 "tiger.yy"
+            {yylhs.value.as < ExpressionPtr > () = StringExpression::Node(drv.location.begin.line, yystack_[0].value.as < std::string > ());}
+#line 995 "tiger.tab.cc"
     break;
 
   case 7: // exp: BREAK
-#line 88 "tiger.yy"
-           {yylhs.value.as < AST::ExpressionPtr > () = AST::BreakStatement::Node(drv.location.begin.line);}
-#line 861 "tiger.tab.cc"
+#line 95 "tiger.yy"
+           {yylhs.value.as < ExpressionPtr > () = BreakStatement::Node(drv.location.begin.line);}
+#line 1001 "tiger.tab.cc"
     break;
 
   case 8: // exp: LPAREN expression_sequence RPAREN
-#line 89 "tiger.yy"
-                                       {yylhs.value.as < AST::ExpressionPtr > () = (AST::ExpressionPtr)yystack_[1].value.as < AST::ExpressionSequencePtr > ();}
-#line 867 "tiger.tab.cc"
+#line 96 "tiger.yy"
+                                       {yylhs.value.as < ExpressionPtr > () = (ExpressionPtr)yystack_[1].value.as < ExpressionSequencePtr > ();}
+#line 1007 "tiger.tab.cc"
     break;
 
   case 9: // exp: function_call
-#line 90 "tiger.yy"
-                   {yylhs.value.as < AST::ExpressionPtr > () = (AST::ExpressionPtr)yystack_[0].value.as < AST::CallExpressionPtr > ();}
-#line 873 "tiger.tab.cc"
+#line 97 "tiger.yy"
+                   {yylhs.value.as < ExpressionPtr > () = (ExpressionPtr)yystack_[0].value.as < CallExpressionPtr > ();}
+#line 1013 "tiger.tab.cc"
     break;
 
   case 10: // exp: arithmetic_exp
-#line 91 "tiger.yy"
-                     {yylhs.value.as < AST::ExpressionPtr > () = (AST::ExpressionPtr)yystack_[0].value.as < AST::BinOpExpressionPtr > ();}
-#line 879 "tiger.tab.cc"
+#line 98 "tiger.yy"
+                     {yylhs.value.as < ExpressionPtr > () = (ExpressionPtr)yystack_[0].value.as < BinOpExpressionPtr > ();}
+#line 1019 "tiger.tab.cc"
     break;
 
   case 21: // expression_sequence: %empty
-#line 103 "tiger.yy"
-                     {yylhs.value.as < AST::ExpressionSequencePtr > () = AST::ExpressionSequence::Node(drv.location.begin.line);}
-#line 885 "tiger.tab.cc"
+#line 110 "tiger.yy"
+                     {yylhs.value.as < ExpressionSequencePtr > () = ExpressionSequence::Node(drv.location.begin.line);}
+#line 1025 "tiger.tab.cc"
     break;
 
   case 22: // expression_sequence: exp exp_seq_tail
-#line 104 "tiger.yy"
-                                      {yystack_[0].value.as < AST::ExpressionSequencePtr > ()->push_front(yystack_[1].value.as < AST::ExpressionPtr > ()); yylhs.value.as < AST::ExpressionSequencePtr > () = yystack_[0].value.as < AST::ExpressionSequencePtr > ();}
-#line 891 "tiger.tab.cc"
+#line 111 "tiger.yy"
+                                      {yystack_[0].value.as < ExpressionSequencePtr > ()->push_front(yystack_[1].value.as < ExpressionPtr > ()); yylhs.value.as < ExpressionSequencePtr > () = yystack_[0].value.as < ExpressionSequencePtr > ();}
+#line 1031 "tiger.tab.cc"
     break;
 
   case 23: // exp_seq_tail: %empty
-#line 106 "tiger.yy"
-                         {yylhs.value.as < AST::ExpressionSequencePtr > () = AST::ExpressionSequence::Node(drv.location.begin.line);}
-#line 897 "tiger.tab.cc"
+#line 113 "tiger.yy"
+                         {yylhs.value.as < ExpressionSequencePtr > () = ExpressionSequence::Node(drv.location.begin.line);}
+#line 1037 "tiger.tab.cc"
     break;
 
   case 24: // exp_seq_tail: SEMICOLON exp exp_seq_tail
-#line 107 "tiger.yy"
-                                          {yystack_[0].value.as < AST::ExpressionSequencePtr > ()->push_front(yystack_[1].value.as < AST::ExpressionPtr > ()); yylhs.value.as < AST::ExpressionSequencePtr > () = yystack_[0].value.as < AST::ExpressionSequencePtr > ();}
-#line 903 "tiger.tab.cc"
+#line 114 "tiger.yy"
+                                          {yystack_[0].value.as < ExpressionSequencePtr > ()->push_front(yystack_[1].value.as < ExpressionPtr > ()); yylhs.value.as < ExpressionSequencePtr > () = yystack_[0].value.as < ExpressionSequencePtr > ();}
+#line 1043 "tiger.tab.cc"
     break;
 
   case 25: // function_call: ID LPAREN function_args RPAREN
-#line 110 "tiger.yy"
-  {yylhs.value.as < AST::CallExpressionPtr > () = AST::CallExpression::Node(drv.location.begin.line, AST::Symbol::Gen(yystack_[3].value.as < std::string > ()), yystack_[1].value.as < AST::ExpressionList > ());}
-#line 909 "tiger.tab.cc"
+#line 117 "tiger.yy"
+  {yylhs.value.as < CallExpressionPtr > () = CallExpression::Node(drv.location.begin.line, Symbol::Gen(yystack_[3].value.as < std::string > ()), *yystack_[1].value.as < ExpressionListPtr > ());}
+#line 1049 "tiger.tab.cc"
     break;
 
   case 26: // function_args: %empty
-#line 112 "tiger.yy"
-                           {yylhs.value.as < AST::ExpressionList > () = AST::ExpressionList();}
-#line 915 "tiger.tab.cc"
+#line 119 "tiger.yy"
+                           {yylhs.value.as < ExpressionListPtr > () = std::make_shared<ExpressionList>();}
+#line 1055 "tiger.tab.cc"
     break;
 
   case 27: // function_args: exp function_args_tail
-#line 113 "tiger.yy"
-                                      {yystack_[0].value.as < AST::ExpressionList > ().push_front(yystack_[1].value.as < AST::ExpressionPtr > ()); yylhs.value.as < AST::ExpressionList > () = std::move(yystack_[0].value.as < AST::ExpressionList > ());}
-#line 921 "tiger.tab.cc"
+#line 120 "tiger.yy"
+                                      {yystack_[0].value.as < ExpressionListPtr > ()->push_front(yystack_[1].value.as < ExpressionPtr > ()); yylhs.value.as < ExpressionListPtr > () = yystack_[0].value.as < ExpressionListPtr > ();}
+#line 1061 "tiger.tab.cc"
     break;
 
   case 28: // function_args_tail: %empty
-#line 115 "tiger.yy"
-                               {yylhs.value.as < AST::ExpressionList > () = AST::ExpressionList();}
-#line 927 "tiger.tab.cc"
+#line 122 "tiger.yy"
+                               {yylhs.value.as < ExpressionListPtr > () = std::make_shared<ExpressionList>();}
+#line 1067 "tiger.tab.cc"
     break;
 
   case 29: // function_args_tail: COMMA exp function_args_tail
-#line 116 "tiger.yy"
-                                                 {yystack_[0].value.as < AST::ExpressionList > ().push_back(yystack_[1].value.as < AST::ExpressionPtr > ()); yylhs.value.as < AST::ExpressionList > () = std::move(yystack_[0].value.as < AST::ExpressionList > ());}
-#line 933 "tiger.tab.cc"
+#line 123 "tiger.yy"
+                                                 {yystack_[0].value.as < ExpressionListPtr > ()->push_back(yystack_[1].value.as < ExpressionPtr > ()); yylhs.value.as < ExpressionListPtr > () = yystack_[0].value.as < ExpressionListPtr > ();}
+#line 1073 "tiger.tab.cc"
     break;
 
   case 30: // arithmetic_exp: exp PLUS exp
-#line 120 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::plusOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 941 "tiger.tab.cc"
+#line 127 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::plusOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1081 "tiger.tab.cc"
     break;
 
   case 31: // arithmetic_exp: exp MINUS exp
-#line 124 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::minusOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 949 "tiger.tab.cc"
+#line 131 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::minusOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1089 "tiger.tab.cc"
     break;
 
   case 32: // arithmetic_exp: exp TIMES exp
-#line 128 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::timesOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 957 "tiger.tab.cc"
+#line 135 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::timesOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1097 "tiger.tab.cc"
     break;
 
   case 33: // arithmetic_exp: exp DIVIDE exp
-#line 132 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::divideOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 965 "tiger.tab.cc"
+#line 139 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::divideOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1105 "tiger.tab.cc"
     break;
 
   case 34: // negation_exp: MINUS exp
-#line 136 "tiger.yy"
-                                     {yylhs.value.as < AST::UnOpExpressionPtr > () = AST::UnOpExpression::Node(drv.location.begin.line,
-                                                        AST::UnOpExpression::negationOp, yystack_[0].value.as < AST::ExpressionPtr > ()); }
-#line 972 "tiger.tab.cc"
+#line 143 "tiger.yy"
+                                     {yylhs.value.as < UnOpExpressionPtr > () = UnOpExpression::Node(drv.location.begin.line,
+                                                        UnOpExpression::negationOp, yystack_[0].value.as < ExpressionPtr > ()); }
+#line 1112 "tiger.tab.cc"
     break;
 
   case 35: // comparison_exp: exp EQ exp
-#line 140 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::eqOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 980 "tiger.tab.cc"
+#line 147 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::eqOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1120 "tiger.tab.cc"
     break;
 
   case 36: // comparison_exp: exp NEQ exp
-#line 144 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::neqOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 988 "tiger.tab.cc"
+#line 151 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::neqOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1128 "tiger.tab.cc"
     break;
 
   case 37: // comparison_exp: exp GT exp
-#line 148 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::gtOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 996 "tiger.tab.cc"
+#line 155 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::gtOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1136 "tiger.tab.cc"
     break;
 
   case 38: // comparison_exp: exp GE exp
-#line 152 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::geOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 1004 "tiger.tab.cc"
+#line 159 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::geOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1144 "tiger.tab.cc"
     break;
 
   case 39: // comparison_exp: exp LT exp
-#line 156 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::ltOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 1012 "tiger.tab.cc"
+#line 163 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::ltOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1152 "tiger.tab.cc"
     break;
 
   case 40: // comparison_exp: exp LE exp
-#line 160 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::leOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 1020 "tiger.tab.cc"
+#line 167 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::leOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1160 "tiger.tab.cc"
     break;
 
   case 41: // boolean_exp: exp AND exp
-#line 164 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::andOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 1028 "tiger.tab.cc"
+#line 171 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::andOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1168 "tiger.tab.cc"
     break;
 
   case 42: // boolean_exp: exp OR exp
-#line 168 "tiger.yy"
-  {yylhs.value.as < AST::BinOpExpressionPtr > () = AST::BinOpExpression::Node(drv.location.begin.line, 
-                                    AST::BinOpExpression::orOp, 
-                                    yystack_[2].value.as < AST::ExpressionPtr > (),yystack_[0].value.as < AST::ExpressionPtr > ());}
-#line 1036 "tiger.tab.cc"
+#line 175 "tiger.yy"
+  {yylhs.value.as < BinOpExpressionPtr > () = BinOpExpression::Node(drv.location.begin.line, 
+                                    BinOpExpression::orOp, 
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1176 "tiger.tab.cc"
+    break;
+
+  case 43: // record_expression: ID LBRACE record_list RBRACE
+#line 181 "tiger.yy"
+  {yylhs.value.as < RecordExpressionPtr > () = RecordExpression::Node(drv.location.begin.line,
+                              Symbol::Gen(yystack_[3].value.as < std::string > ()), 
+                              yystack_[1].value.as < efieldList > ());}
+#line 1184 "tiger.tab.cc"
     break;
 
   case 44: // record_list: record_field record_list_extension
-#line 176 "tiger.yy"
-  {yystack_[0].value.as < AST::efieldList > ().push_front(yystack_[1].value.as < AST::efield > ()); yylhs.value.as < AST::efieldList > () = std::move(yystack_[0].value.as < AST::efieldList > ());}
-#line 1042 "tiger.tab.cc"
+#line 186 "tiger.yy"
+  {yystack_[0].value.as < efieldList > ().push_front(yystack_[1].value.as < efield > ()); yylhs.value.as < efieldList > () = std::move(yystack_[0].value.as < efieldList > ());}
+#line 1190 "tiger.tab.cc"
     break;
 
   case 45: // record_list_extension: %empty
-#line 178 "tiger.yy"
-                       {yylhs.value.as < AST::efieldList > () = AST::efieldList();}
-#line 1048 "tiger.tab.cc"
+#line 188 "tiger.yy"
+                       {yylhs.value.as < efieldList > () = efieldList();}
+#line 1196 "tiger.tab.cc"
     break;
 
   case 46: // record_list_extension: COMMA record_field record_list_extension
-#line 180 "tiger.yy"
-  {yystack_[0].value.as < AST::efieldList > ().push_front(yystack_[1].value.as < AST::efield > ()); yylhs.value.as < AST::efieldList > () = std::move(yystack_[0].value.as < AST::efieldList > ());}
-#line 1054 "tiger.tab.cc"
+#line 190 "tiger.yy"
+  {yystack_[0].value.as < efieldList > ().push_front(yystack_[1].value.as < efield > ()); yylhs.value.as < efieldList > () = std::move(yystack_[0].value.as < efieldList > ());}
+#line 1202 "tiger.tab.cc"
     break;
 
   case 47: // record_field: ID EQ exp
-#line 182 "tiger.yy"
-                        {yylhs.value.as < AST::efield > () = AST::efield{AST::Symbol::Gen(yystack_[2].value.as < std::string > ()), yystack_[0].value.as < AST::ExpressionPtr > ()};}
-#line 1060 "tiger.tab.cc"
+#line 192 "tiger.yy"
+                        {yylhs.value.as < efield > () = efield{Symbol::Gen(yystack_[2].value.as < std::string > ()), yystack_[0].value.as < ExpressionPtr > ()};}
+#line 1208 "tiger.tab.cc"
+    break;
+
+  case 48: // array_expression: ID LBRACK exp RBRACK OF exp
+#line 195 "tiger.yy"
+  {yylhs.value.as < ArrayExpressionPtr > () = ArrayExpression::Node(drv.location.begin.line,
+                                    Symbol::Gen(yystack_[5].value.as < std::string > ()),
+                                    yystack_[3].value.as < ExpressionPtr > (), yystack_[0].value.as < ExpressionPtr > ());}
+#line 1216 "tiger.tab.cc"
+    break;
+
+  case 49: // assign_statement: lvalue ASSIGN exp
+#line 200 "tiger.yy"
+  {yylhs.value.as < AssignStatementPtr > () = AssignStatement::Node(drv.location.begin.line,
+                              yystack_[2].value.as < VariablePtr > (), yystack_[0].value.as < ExpressionPtr > ());}
+#line 1223 "tiger.tab.cc"
+    break;
+
+  case 50: // if_statement: IF exp THEN exp ELSE exp
+#line 204 "tiger.yy"
+  {yylhs.value.as < IfStatementPtr > () = IfStatement::Node(drv.location.begin.line,
+                                yystack_[4].value.as < ExpressionPtr > (),yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1230 "tiger.tab.cc"
+    break;
+
+  case 51: // if_statement: IF exp THEN exp
+#line 208 "tiger.yy"
+  {yylhs.value.as < IfStatementPtr > () = IfStatement::Node(drv.location.begin.line,
+                                yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > (), NULL);}
+#line 1237 "tiger.tab.cc"
+    break;
+
+  case 52: // while_statement: WHILE exp DO exp
+#line 212 "tiger.yy"
+  {yylhs.value.as < WhileStatementPtr > () = WhileStatement::Node(drv.location.begin.line,
+                                    yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1244 "tiger.tab.cc"
+    break;
+
+  case 53: // for_statement: FOR ID ASSIGN exp TO exp DO exp
+#line 216 "tiger.yy"
+  {yylhs.value.as < ForStatementPtr > () = ForStatement::Node(drv.location.begin.line,
+                                Symbol::Gen(yystack_[6].value.as < std::string > ()), yystack_[4].value.as < ExpressionPtr > (), yystack_[2].value.as < ExpressionPtr > (),yystack_[0].value.as < ExpressionPtr > ());}
+#line 1251 "tiger.tab.cc"
+    break;
+
+  case 61: // type: ID
+#line 231 "tiger.yy"
+  {yylhs.value.as < SymbolReferencePtr > () = SymbolReference::Node(drv.location.begin.line,
+                                    Symbol::Gen(yystack_[0].value.as < std::string > ()));}
+#line 1258 "tiger.tab.cc"
     break;
 
   case 72: // lvalue: ID
-#line 223 "tiger.yy"
-           {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[0].value.as < std::string > ()));}
-#line 1066 "tiger.tab.cc"
+#line 248 "tiger.yy"
+           {yylhs.value.as < VariablePtr > () = SimpleVariable::Node(0, Symbol::Gen(yystack_[0].value.as < std::string > ()));}
+#line 1264 "tiger.tab.cc"
     break;
 
   case 73: // lvalue: ID field_extension
-#line 224 "tiger.yy"
-                           {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
-#line 1072 "tiger.tab.cc"
+#line 249 "tiger.yy"
+                           {yylhs.value.as < VariablePtr > () = SimpleVariable::Node(0, Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < FieldVariablePtr > ()->set_var(yylhs.value.as < VariablePtr > ());}
+#line 1270 "tiger.tab.cc"
     break;
 
   case 74: // lvalue: ID subscript_extension
-#line 225 "tiger.yy"
-                               {yylhs.value.as < AST::VariablePtr > () = AST::SimpleVariable::Node(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::VariablePtr > ());}
-#line 1078 "tiger.tab.cc"
+#line 250 "tiger.yy"
+                               {yylhs.value.as < VariablePtr > () = SimpleVariable::Node(0, Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < SubscriptVariablePtr > ()->set_var(yylhs.value.as < VariablePtr > ());}
+#line 1276 "tiger.tab.cc"
     break;
 
   case 75: // field_extension: DOT ID
-#line 227 "tiger.yy"
-                         {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[0].value.as < std::string > ())); }
-#line 1084 "tiger.tab.cc"
+#line 252 "tiger.yy"
+                         {yylhs.value.as < FieldVariablePtr > () = FieldVariable::PartialNode(0, Symbol::Gen(yystack_[0].value.as < std::string > ())); }
+#line 1282 "tiger.tab.cc"
     break;
 
   case 76: // field_extension: DOT ID field_extension
-#line 228 "tiger.yy"
-                                        {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::FieldVariablePtr > ());}
-#line 1090 "tiger.tab.cc"
+#line 253 "tiger.yy"
+                                        {yylhs.value.as < FieldVariablePtr > () = FieldVariable::PartialNode(0, Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < FieldVariablePtr > ()->set_var(yylhs.value.as < FieldVariablePtr > ());}
+#line 1288 "tiger.tab.cc"
     break;
 
   case 77: // field_extension: DOT ID subscript_extension
-#line 229 "tiger.yy"
-                                            {yylhs.value.as < AST::FieldVariablePtr > () = AST::FieldVariable::PartialNode(0, AST::Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::FieldVariablePtr > ());}
-#line 1096 "tiger.tab.cc"
+#line 254 "tiger.yy"
+                                            {yylhs.value.as < FieldVariablePtr > () = FieldVariable::PartialNode(0, Symbol::Gen(yystack_[1].value.as < std::string > ())); yystack_[0].value.as < SubscriptVariablePtr > ()->set_var(yylhs.value.as < FieldVariablePtr > ());}
+#line 1294 "tiger.tab.cc"
     break;
 
   case 78: // subscript_extension: LBRACK exp RBRACK
-#line 231 "tiger.yy"
-                                        {yylhs.value.as < AST::SubscriptVariablePtr > () = AST::SubscriptVariable::PartialNode(0, yystack_[1].value.as < AST::ExpressionPtr > ());}
-#line 1102 "tiger.tab.cc"
+#line 256 "tiger.yy"
+                                        {yylhs.value.as < SubscriptVariablePtr > () = SubscriptVariable::PartialNode(0, yystack_[1].value.as < ExpressionPtr > ());}
+#line 1300 "tiger.tab.cc"
     break;
 
   case 79: // subscript_extension: LBRACK exp RBRACK field_extension
-#line 232 "tiger.yy"
-                                                       {yylhs.value.as < AST::SubscriptVariablePtr > () = AST::SubscriptVariable::PartialNode(0,yystack_[2].value.as < AST::ExpressionPtr > ()); yystack_[0].value.as < AST::FieldVariablePtr > ()->set_var(yylhs.value.as < AST::SubscriptVariablePtr > ());}
-#line 1108 "tiger.tab.cc"
+#line 257 "tiger.yy"
+                                                       {yylhs.value.as < SubscriptVariablePtr > () = SubscriptVariable::PartialNode(0,yystack_[2].value.as < ExpressionPtr > ()); yystack_[0].value.as < FieldVariablePtr > ()->set_var(yylhs.value.as < SubscriptVariablePtr > ());}
+#line 1306 "tiger.tab.cc"
     break;
 
   case 80: // subscript_extension: LBRACK exp RBRACK subscript_extension
-#line 233 "tiger.yy"
-                                                           {yylhs.value.as < AST::SubscriptVariablePtr > () = AST::SubscriptVariable::PartialNode(0,yystack_[2].value.as < AST::ExpressionPtr > ()); yystack_[0].value.as < AST::SubscriptVariablePtr > ()->set_var(yylhs.value.as < AST::SubscriptVariablePtr > ());}
-#line 1114 "tiger.tab.cc"
+#line 258 "tiger.yy"
+                                                           {yylhs.value.as < SubscriptVariablePtr > () = SubscriptVariable::PartialNode(0,yystack_[2].value.as < ExpressionPtr > ()); yystack_[0].value.as < SubscriptVariablePtr > ()->set_var(yylhs.value.as < SubscriptVariablePtr > ());}
+#line 1312 "tiger.tab.cc"
     break;
 
 
-#line 1118 "tiger.tab.cc"
+#line 1316 "tiger.tab.cc"
 
             default:
               break;
@@ -1509,9 +1707,9 @@ namespace yy {
   "BREAK", "NIL", "FUNCTION", "VAR", "TYPE", "UMINUS", "$accept",
   "program", "exp", "expression_sequence", "exp_seq_tail", "function_call",
   "function_args", "function_args_tail", "arithmetic_exp", "negation_exp",
-  "comparison_exp", "boolean_exp", "record_creation", "record_list",
-  "record_list_extension", "record_field", "array_creation",
-  "assignment_exp", "if_statement", "while_loop", "for_loop",
+  "comparison_exp", "boolean_exp", "record_expression", "record_list",
+  "record_list_extension", "record_field", "array_expression",
+  "assign_statement", "if_statement", "while_statement", "for_statement",
   "let_statement", "declaration_sequence", "declaration",
   "type_declaration", "type", "type_fields", "type_fields_extension",
   "variable_declaration", "function_declaration", "lvalue",
@@ -1521,18 +1719,18 @@ namespace yy {
 
 
 #if YYDEBUG
-  const unsigned char
+  const short
   parser::yyrline_[] =
   {
-       0,    82,    82,    84,    85,    86,    87,    88,    89,    90,
-      91,    92,    93,    94,    95,    96,    97,    98,    99,   100,
-     101,   103,   104,   106,   107,   109,   112,   113,   115,   116,
-     119,   123,   127,   131,   136,   139,   143,   147,   151,   155,
-     159,   163,   167,   173,   175,   178,   179,   182,   184,   186,
-     188,   190,   192,   194,   196,   198,   199,   201,   202,   203,
-     205,   207,   208,   209,   211,   212,   214,   215,   217,   218,
-     220,   221,   223,   224,   225,   227,   228,   229,   231,   232,
-     233
+       0,    89,    89,    91,    92,    93,    94,    95,    96,    97,
+      98,    99,   100,   101,   102,   103,   104,   105,   106,   107,
+     108,   110,   111,   113,   114,   116,   119,   120,   122,   123,
+     126,   130,   134,   138,   143,   146,   150,   154,   158,   162,
+     166,   170,   174,   180,   185,   188,   189,   192,   194,   199,
+     203,   207,   211,   215,   219,   221,   222,   224,   225,   226,
+     228,   230,   233,   234,   236,   237,   239,   240,   242,   243,
+     245,   246,   248,   249,   250,   252,   253,   254,   256,   257,
+     258
   };
 
   void
@@ -1564,9 +1762,9 @@ namespace yy {
 
 
 } // yy
-#line 1568 "tiger.tab.cc"
+#line 1766 "tiger.tab.cc"
 
-#line 234 "tiger.yy"
+#line 259 "tiger.yy"
 
 
 void

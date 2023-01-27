@@ -4,8 +4,6 @@
 #include <memory>
 #include <string>
 
-namespace AST {
-
 class Variable;
 class FieldVariable;
 class SubscriptVariable;
@@ -17,6 +15,15 @@ class ExpressionSequence;
 class CallExpression;
 class BinOpExpression;
 class UnOpExpression;
+class RecordExpression;
+class ArrayExpression;
+class AssignStatement;
+class IfStatement;
+class WhileStatement;
+class ForStatement;
+class LetStatement;
+
+class SymbolReference;
 
 class Declaration;
 
@@ -37,19 +44,28 @@ using ExpressionSequencePtr = std::shared_ptr<ExpressionSequence>;
 using CallExpressionPtr = std::shared_ptr<CallExpression>;
 using BinOpExpressionPtr = std::shared_ptr<BinOpExpression>;
 using UnOpExpressionPtr = std::shared_ptr<UnOpExpression>;
+using RecordExpressionPtr = std::shared_ptr<RecordExpression>;
+using ArrayExpressionPtr = std::shared_ptr<ArrayExpression>;
+using AssignStatementPtr = std::shared_ptr<AssignStatement>;
+using IfStatementPtr = std::shared_ptr<IfStatement>;
+using WhileStatementPtr = std::shared_ptr<WhileStatement>;
+using ForStatementPtr = std::shared_ptr<ForStatement>;
 
 using DeclarationPtr = std::shared_ptr<Declaration>;
 
 using TypePtr = std::shared_ptr<Type>;
+using SymbolReferencePtr = std::shared_ptr<SymbolReference>;
+
 using SymbolPtr = std::shared_ptr<Symbol>;
 
 // List Aliases
 using DeclarationList = std::list<DeclarationPtr>;
 using ExpressionList = std::list<ExpressionPtr>;
+using ExpressionListPtr = std::shared_ptr<ExpressionList>;
 
-//using efieldPtr = std::shared_ptr<efield>;
-//using efieldList = std::list<efieldPtr>;
-using efieldList = std::list<efield>; 
+// using efieldPtr = std::shared_ptr<efield>;
+// using efieldList = std::list<efieldPtr>;
+using efieldList = std::list<efield>;
 using fieldPtr = std::shared_ptr<field>;
 using fieldList = std::list<fieldPtr>;
 
@@ -263,7 +279,7 @@ class RecordExpression : public Expression {
   RecordExpression(int pos, SymbolPtr type, efieldList fields)
       : Expression(pos, recordExp), type(type), fields(std::move(fields)) {}
 
-  static ExpressionPtr Node(int pos, SymbolPtr type, efieldList fields);
+  static RecordExpressionPtr Node(int pos, SymbolPtr type, efieldList fields);
 
  private:
   SymbolPtr type;
@@ -287,7 +303,7 @@ class AssignStatement : public Expression {
   AssignStatement(int pos, VariablePtr var, ExpressionPtr exp)
       : Expression(pos, assignExp), var(var), exp(exp) {}
 
-  static ExpressionPtr Node(int pos, VariablePtr, ExpressionPtr exp);
+  static AssignStatementPtr Node(int pos, VariablePtr, ExpressionPtr exp);
 
  private:
   VariablePtr var;
@@ -300,8 +316,8 @@ class IfStatement : public Expression {
               ExpressionPtr elsee)
       : Expression(pos, ifExp), test(test), then(then), elsee(elsee) {}
 
-  static ExpressionPtr Node(int pos, ExpressionPtr test, ExpressionPtr then,
-                            ExpressionPtr elsee);
+  static IfStatementPtr Node(int pos, ExpressionPtr test, ExpressionPtr then,
+                             ExpressionPtr elsee);
 
  private:
   ExpressionPtr test;
@@ -314,7 +330,8 @@ class WhileStatement : public Expression {
   WhileStatement(int pos, ExpressionPtr test, ExpressionPtr body)
       : Expression(pos, whileExp), test(test), body(body) {}
 
-  static ExpressionPtr Node(int pos, ExpressionPtr test, ExpressionPtr body);
+  static WhileStatementPtr Node(int pos, ExpressionPtr test,
+                                ExpressionPtr body);
 
  private:
   ExpressionPtr test;
@@ -327,8 +344,8 @@ class ForStatement : public Expression {
                ExpressionPtr body)
       : Expression(pos, forExp), var(var), lo(lo), hi(hi), body(body) {}
 
-  static ExpressionPtr Node(int pos, SymbolPtr var, ExpressionPtr lo,
-                            ExpressionPtr hi, ExpressionPtr body);
+  static ForStatementPtr Node(int pos, SymbolPtr var, ExpressionPtr lo,
+                              ExpressionPtr hi, ExpressionPtr body);
 
  private:
   SymbolPtr var;
@@ -355,13 +372,14 @@ class LetStatement : public Expression {
   ExpressionPtr body;
 };
 
-class ArrayCreation : public Expression {
+class ArrayExpression : public Expression {
  public:
-  ArrayCreation(int pos, SymbolPtr type, ExpressionPtr size, ExpressionPtr init)
+  ArrayExpression(int pos, SymbolPtr type, ExpressionPtr size,
+                  ExpressionPtr init)
       : Expression(pos, arrayExp), type(type), size(size), init(init) {}
 
-  static ExpressionPtr Node(int pos, SymbolPtr type, ExpressionPtr size,
-                            ExpressionPtr init);
+  static ArrayExpressionPtr Node(int pos, SymbolPtr type, ExpressionPtr size,
+                                 ExpressionPtr init);
 
  private:
   SymbolPtr type;
@@ -440,15 +458,15 @@ class SymbolReference : public Type {
   SymbolReference(int pos, SymbolPtr type_name)
       : Type(pos, symbol_ref), type_name(type_name) {}
 
-  static TypePtr Node(int pos, SymbolPtr type_name);
+  static SymbolReferencePtr Node(int pos, SymbolPtr type_name);
 
  private:
   SymbolPtr type_name;
 };
 
-class Record : public Type {
+class RecordType : public Type {
  public:
-  Record(int pos, fieldList fields)
+  RecordType(int pos, fieldList fields)
       : Type(pos, record), fields(std::move(fields)) {}
   static TypePtr Node(int pos, fieldList fields);
 
@@ -456,9 +474,9 @@ class Record : public Type {
   fieldList fields;
 };
 
-class ArrayReference : public Type {
+class ArrayType : public Type {
  public:
-  ArrayReference(int pos, SymbolPtr array_name)
+  ArrayType(int pos, SymbolPtr array_name)
       : Type(pos, array_ref), array_name(array_name) {}
 
   static TypePtr Node(int pos, SymbolPtr array_name);
@@ -467,5 +485,4 @@ class ArrayReference : public Type {
   SymbolPtr array_name;
 };
 
-}  // namespace AST
 #endif
